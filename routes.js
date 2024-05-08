@@ -7,7 +7,12 @@ const router = express.Router();
 const gardenController = require('./controllers/Garden/garden');
 
 // Create a new task
-router.post('/add-new-garden', gardenController.addGarden);
+router.post('/GreenThumb/api/v1/add-new-garden', gardenController.addGarden);
+router.get("/GreenThumb/api/v1/get-garden-list", gardenController.getGardenList);
+router.get("/GreenThumb/api/v1/get-garden-list/:id", gardenController.getGardenListById);
+router.get("/GreenThumb/api/v1/get-garden-list-by-name/:name", gardenController.getGardenListByName);
+router.get("/GreenThumb/api/v1/get-garden-list-by-location/:location", gardenController.getGardenListByLocation);
+
 
 module.exports =  router;
   
