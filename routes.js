@@ -16,6 +16,8 @@ router.get("/GreenThumb/api/v1/get-garden-list", gardenController.getGardenList)
 router.get("/GreenThumb/api/v1/get-garden-list/:id", gardenController.getGardenListById);
 router.get("/GreenThumb/api/v1/get-garden-list-by-name/:name", gardenController.getGardenListByName);
 router.get("/GreenThumb/api/v1/get-garden-list-by-location/:location", gardenController.getGardenListByLocation);
+router.patch("/GreenThumb/api/v1/update-garden-list/:id", gardenController.updateGardenList)
+router.delete("/GreenThumb/api/v1/delete-specific-garden-from-list/:id", gardenController.deleteSpecificGardenFromList)
 
 
 // Crop Planning and Tracking:
