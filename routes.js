@@ -21,7 +21,13 @@ router.get("/GreenThumb/api/v1/get-garden-list-by-location/:location", gardenCon
 // Crop Planning and Tracking:
 // creat a new user 
 
+
 router.post("/GreenThumb/api/v1/create-new-user", userController.creatNewUser);
+router.get("/GreenThumb/api/v1/get-user-list", userController.getUserList);
+router.get("/GreenThumb/api/v1/get-user-list/:id", userController.getUserListById);
+router.get("/GreenThumb/api/v1/get-user-list-by-name/:name", userController.getUserListByName);
+router.get("/GreenThumb/api/v1/get-user-list-by-email/:email", userController.getUserListByEmail);
+
 
 // Knowledge Sharing:
 // create a new guide 
