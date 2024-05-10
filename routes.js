@@ -8,7 +8,7 @@ const gardenController = require('./controllers/Garden/garden');
 
 const userController = require('./controllers/User/user');
 
-
+const guideController = require('./controllers/Guide/guide');
 
 // Create a new task
 router.post('/GreenThumb/api/v1/add-new-garden', gardenController.addGarden);
@@ -23,7 +23,9 @@ router.get("/GreenThumb/api/v1/get-garden-list-by-location/:location", gardenCon
 
 router.post("/GreenThumb/api/v1/create-new-user", userController.creatNewUser);
 
-
+// Knowledge Sharing:
+// create a new guide 
+router.post('/GreenThumb/api/v1/add-new-guide', guideController.addGuide);
 
 module.exports =  router;
   
