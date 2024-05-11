@@ -34,6 +34,8 @@ router.get("/GreenThumb/api/v1/get-user-list-by-email/:email", userController.ge
 // Knowledge Sharing:
 // create a new guide 
 router.post('/GreenThumb/api/v1/add-new-guide', guideController.addGuide);
+router.patch("/GreenThumb/api/v1/update-guide-list/:id", guideController.updateGuideList)
+router.delete("/GreenThumb/api/v1/delete-specific-guide-from-list/:id", guideController.deleteSpecificGuideFromList)
 
 module.exports =  router;
-  
+    
