@@ -15,6 +15,45 @@ Guide.addGuide = (newGuide, result) => {
     });
   };
 
+  Guide.getGuide = ( result) => {
+
+    db.query('SELECT * FROM guide',  (err, res) => {
+        
+        if (err) {
+        console.log(3);
+        result(err, null);
+        return;
+        }
+        result(null, res);
+    });
+    };
+
+    Guide.getGuideById = (GuideID, result) => {
+
+        db.query(`SELECT * FROM guide WHERE GuideID = ${GuideID}`, (err, res) => {
+    
+            if (err) {
+                console.log(3);
+                result(err, null);
+                return;
+            }
+            result(null, res);
+        });
+    };
+    
+    
+    Guide.getGuideListByTitle = (Title, result) => {
+        db.query(`SELECT * FROM guide WHERE Title = "${Title}"`, (err, res) => {
+    
+            if (err) {
+                console.log(3);
+                result(err, null);
+                return;
+            }
+            result(null, res);
+        });
+    };
+
   Guide.updateGuideList = (GuideID, Data, result) => {
 
     const guideData = db.query(`SELECT * FROM guide Where GuideID = ${GuideID}`, (err, res) => {
