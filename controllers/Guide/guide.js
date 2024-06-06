@@ -17,6 +17,53 @@ const addGuide = (req, res) => {
     });
   };
 
+  const getGuide = (req, res) => {
+    Guide.getGuide( (err, data) => {
+        console.log(1);
+      if (err) {
+        res.status(500).send({
+          message:
+            err.message || 'Some error occurred while get the task.'
+        });
+      } else {
+        console.log(1);
+        res.send(data);
+      }
+    });
+  };
+
+  const getGuideById = (req, res) => {
+    console.log(req.params.id);
+    Guide.getGuideById( req.params.id ,(err, data) => {
+        console.log(1);
+        if (err) {
+        res.status(500).send({
+            message:
+            err.message || 'Some error occurred while creating the task.'
+        });
+        } else {
+        console.log(1);
+        res.send(data);
+        }
+    });
+    };
+    
+    const getGuideListByTitle = (req, res) => {
+        console.log(req.params.title);
+        Guide.getGuideListByTitle( req.params.title ,(err, data) => {
+            console.log(1);
+            if (err) {
+            res.status(500).send({
+                message:
+                err.message || 'Some error occurred while creating the task.'
+            });
+            } else {
+            console.log(1);
+            res.send(data);
+            }
+        });
+        };
+
 
   const updateGuideList = (req, res) => {
   console.log(req.params.id);
@@ -53,6 +100,9 @@ const deleteSpecificGuideFromList = (req, res) => {
 
 module.exports = {
     addGuide ,
+    getGuide ,
+    getGuideById,
+    getGuideListByTitle,
     updateGuideList,
     deleteSpecificGuideFromList
 };
