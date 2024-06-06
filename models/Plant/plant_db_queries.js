@@ -1,36 +1,23 @@
 const db = require('../../db-connection');
 
-const User = {};
+const Plant = {};
 
-User.addUser = (newUser, result) => {
+Plant.addPlant = (newPlant, result) => {
 
-    db.query('INSERT INTO user SET ?', newUser, (err, res) => {
-
-        if (err) {
-            console.log(3);
-            result(err, null);
-            return;
-        }
-        result(null, { ...newUser });
-    });
-};
-
-User.getUserList = (result) => {
-
-    db.query('SELECT * FROM user', (err, res) => {
+    db.query('INSERT INTO plant SET ?', newPlant, (err, res) => {
 
         if (err) {
             console.log(3);
             result(err, null);
             return;
         }
-        result(null, res);
+        result(null, { ...newPlant });
     });
 };
 
-User.getUserListById = (UserID, result) => {
+Plant.getPlantsList = (result) => {
 
-    db.query(`SELECT * FROM user WHERE UserID = ${UserID}`, (err, res) => {
+    db.query('SELECT * FROM plant', (err, res) => {
 
         if (err) {
             console.log(3);
@@ -41,21 +28,9 @@ User.getUserListById = (UserID, result) => {
     });
 };
 
-User.getUserListByName = (Username, result) => {
-    db.query(`SELECT * FROM user WHERE Username = "${Username}"`, (err, res) => {
+Plant.getPlantsListById = (PlantID, result) => {
 
-        if (err) {
-            console.log(3);
-            result(err, null);
-            return;
-        }
-        result(null, res);
-    });
-};
-
-User.getUserListByEmail = (email, result) => {
-
-    db.query(`SELECT * FROM user WHERE Email = "${email}"`, (err, res) => {
+    db.query(`SELECT * FROM plant WHERE PlantID = ${PlantID}`, (err, res) => {
 
         if (err) {
             console.log(3);
@@ -67,9 +42,11 @@ User.getUserListByEmail = (email, result) => {
 };
 
 
-User.updateUser = (UserID, Data, result) => {
 
-    const userData = db.query(`SELECT * FROM user Where UserID = ${UserID}`, (err, res) => {
+
+Plant.updatePlant = (PlantID, Data, result) => {
+
+    const PlantData = db.query(`SELECT * FROM plant Where PlantID = ${PlantID}`, (err, res) => {
 
         if (err) {
             console.log(3);
@@ -77,7 +54,7 @@ User.updateUser = (UserID, Data, result) => {
             return;
         }
         console.log(res);
-        let updateQuery = 'UPDATE user SET ';
+        let updateQuery = 'UPDATE plant SET ';
         Object.keys(Data).forEach((key, index) => { // Object.keys(Data) is used for iterate key-values 
             if (Data[key] !== '') {
                 updateQuery += `${key} = '${Data[key]}'`;
@@ -86,7 +63,7 @@ User.updateUser = (UserID, Data, result) => {
                 }
             }
         });
-        updateQuery += ` WHERE UserID = ${UserID}`;
+        updateQuery += ` WHERE PlantID = ${PlantID}`;
         console.log(updateQuery);
         // Execute the update query
         db.query(updateQuery, (err, result) => {
@@ -103,9 +80,21 @@ User.updateUser = (UserID, Data, result) => {
 
 }
 
+Plant.getPlantsListByName = (Name, result) => {
+    db.query(`SELECT * FROM plant WHERE Name = "${Name}"`, (err, res) => {
 
-User.deleteUser = (UserID, result) => {
-    db.query(`DELETE FROM user WHERE UserID = "${UserID}"`, (err, res) => {
+        if (err) {
+            console.log(3);
+            result(err, null);
+            return;
+        }
+        result(null, res);
+    });
+};
+
+
+Plant.deletePlant = (PlantID, result) => {
+    db.query(`DELETE FROM plant WHERE PlantID = "${PlantID}"`, (err, res) => {
 
         if (err) {
             console.log(3);
@@ -115,4 +104,4 @@ User.deleteUser = (UserID, result) => {
         result(null, res);
     });
 }
-module.exports = User;  
+module.exports = Plant;  
