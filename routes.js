@@ -18,6 +18,10 @@ const plantController = require('./controllers/Plant/plant');
 
 const partnershipController = require('./controllers/Partnership/partnership');
 
+const resourceController = require('./controllers/Resource/resource');
+const exchangeController = require('./controllers/Exchange/exchange');
+const activityController = require('./controllers/Activity/activity');
+
 // Create a new task
 router.post('/GreenThumb/api/v1/new-garden', gardenController.addGarden);
 router.get("/GreenThumb/api/v1/gardens-list", gardenController.getGardenList);
@@ -50,7 +54,7 @@ router.get("/GreenThumb/api/v1/guide-list-by-title/:title", guideController.getG
 router.patch("/GreenThumb/api/v1/guide/:id", guideController.updateGuideList);
 router.delete("/GreenThumb/api/v1/specific-guide-from-list/:id", guideController.deleteSpecificGuideFromList);
 
-///////////////
+
 // VolunteerEvent
 
 router.post('/GreenThumb/api/v1/new-event', eventController.addEvent);
@@ -86,6 +90,38 @@ router.get("/GreenThumb/api/v1/partnership/:id", partnershipController.getPartne
 router.get("/GreenThumb/api/v1/partnerships-list-by-name/:name", partnershipController.getPartnershipsListByName);
 router.patch("/GreenThumb/api/v1/partnership/:id", partnershipController.updatePartnership)
 router.delete("/GreenThumb/api/v1/partnership/:id", partnershipController.deletePartnership)
+
+
+// Resource 
+router.post('/GreenThumb/api/v1/new-resource', resourceController.addResource);
+router.get("/GreenThumb/api/v1/resources-list", resourceController.getResourcesList);
+router.get("/GreenThumb/api/v1/resource/:id", resourceController.getResourceById);
+router.get("/GreenThumb/api/v1/resources-list-by-type/:type", resourceController.getResourcesListByType);
+router.patch("/GreenThumb/api/v1/resource/:id", resourceController.updateResource)
+router.delete("/GreenThumb/api/v1/resource/:id", resourceController.deleteResource)
+
+
+// Exchange
+router.post('/GreenThumb/api/v1/new-exchange', exchangeController.addExchange);
+router.get("/GreenThumb/api/v1/exchanges-list", exchangeController.getExchangesList);
+router.get("/GreenThumb/api/v1/exchange/:id", exchangeController.getExchangeById);
+router.get("/GreenThumb/api/v1/exchanges-list-by-resource/:id", exchangeController.getExchangesListByResourceId);
+router.get("/GreenThumb/api/v1/exchanges-list-by-offer-user/:id", exchangeController.getExchangesListByOfferUserId);
+router.get("/GreenThumb/api/v1/exchanges-list-by-requestor-user/:id", exchangeController.getExchangesListByRequestorUserId);
+router.patch("/GreenThumb/api/v1/exchange/:id", exchangeController.updateExchange)
+router.delete("/GreenThumb/api/v1/exchange/:id", exchangeController.deleteExchange)
+
+
+
+// Planting Activity
+router.post('/GreenThumb/api/v1/new-activity', activityController.addActivity);
+router.get("/GreenThumb/api/v1/activities-list", activityController.getActivitiesList);
+router.get("/GreenThumb/api/v1/activity/:id", activityController.getActivityById);
+router.get("/GreenThumb/api/v1/activities-list-by-user/:id", activityController.getActivitiesListByUserId);
+router.get("/GreenThumb/api/v1/activities-list-by-plot/:id", activityController.getActivitiesListByPlotId);
+router.patch("/GreenThumb/api/v1/activity/:id", activityController.updateActivity)
+router.delete("/GreenThumb/api/v1/activity/:id", activityController.deleteActivity)
+
 
 
 module.exports =  router;
