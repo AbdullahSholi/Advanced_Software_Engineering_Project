@@ -1,36 +1,23 @@
 const db = require('../../db-connection');
 
-const User = {};
+const Event = {};
 
-User.addUser = (newUser, result) => {
+Event.addEvent = (newEvent, result) => {
 
-    db.query('INSERT INTO user SET ?', newUser, (err, res) => {
-
-        if (err) {
-            console.log(3);
-            result(err, null);
-            return;
-        }
-        result(null, { ...newUser });
-    });
-};
-
-User.getUserList = (result) => {
-
-    db.query('SELECT * FROM user', (err, res) => {
+    db.query('INSERT INTO volunteerevent SET ?', newEvent, (err, res) => {
 
         if (err) {
             console.log(3);
             result(err, null);
             return;
         }
-        result(null, res);
+        result(null, { ...newEvent });
     });
 };
 
-User.getUserListById = (UserID, result) => {
+Event.getEventsList = (result) => {
 
-    db.query(`SELECT * FROM user WHERE UserID = ${UserID}`, (err, res) => {
+    db.query('SELECT * FROM volunteerevent', (err, res) => {
 
         if (err) {
             console.log(3);
@@ -41,8 +28,9 @@ User.getUserListById = (UserID, result) => {
     });
 };
 
-User.getUserListByName = (Username, result) => {
-    db.query(`SELECT * FROM user WHERE Username = "${Username}"`, (err, res) => {
+Event.getEventsListById = (EventID, result) => {
+
+    db.query(`SELECT * FROM volunteerevent WHERE EventID = ${EventID}`, (err, res) => {
 
         if (err) {
             console.log(3);
@@ -53,9 +41,8 @@ User.getUserListByName = (Username, result) => {
     });
 };
 
-User.getUserListByEmail = (email, result) => {
-
-    db.query(`SELECT * FROM user WHERE Email = "${email}"`, (err, res) => {
+Event.getEventsListByGardenId = (GardenID, result) => {
+    db.query(`SELECT * FROM volunteerevent WHERE GardenID = "${GardenID}"`, (err, res) => {
 
         if (err) {
             console.log(3);
@@ -67,9 +54,10 @@ User.getUserListByEmail = (email, result) => {
 };
 
 
-User.updateUser = (UserID, Data, result) => {
 
-    const userData = db.query(`SELECT * FROM user Where UserID = ${UserID}`, (err, res) => {
+Event.updateEvent = (EventID, Data, result) => {
+
+    const eventData = db.query(`SELECT * FROM volunteerevent Where EventID = ${EventID}`, (err, res) => {
 
         if (err) {
             console.log(3);
@@ -77,7 +65,7 @@ User.updateUser = (UserID, Data, result) => {
             return;
         }
         console.log(res);
-        let updateQuery = 'UPDATE user SET ';
+        let updateQuery = 'UPDATE volunteerevent SET ';
         Object.keys(Data).forEach((key, index) => { // Object.keys(Data) is used for iterate key-values 
             if (Data[key] !== '') {
                 updateQuery += `${key} = '${Data[key]}'`;
@@ -86,7 +74,7 @@ User.updateUser = (UserID, Data, result) => {
                 }
             }
         });
-        updateQuery += ` WHERE UserID = ${UserID}`;
+        updateQuery += ` WHERE EventID = ${EventID}`;
         console.log(updateQuery);
         // Execute the update query
         db.query(updateQuery, (err, result) => {
@@ -104,8 +92,8 @@ User.updateUser = (UserID, Data, result) => {
 }
 
 
-User.deleteUser = (UserID, result) => {
-    db.query(`DELETE FROM user WHERE UserID = "${UserID}"`, (err, res) => {
+Event.deleteEvent = (EventID, result) => {
+    db.query(`DELETE FROM volunteerevent WHERE EventID = "${EventID}"`, (err, res) => {
 
         if (err) {
             console.log(3);
@@ -115,4 +103,4 @@ User.deleteUser = (UserID, result) => {
         result(null, res);
     });
 }
-module.exports = User;  
+module.exports = Event;  

@@ -1,36 +1,23 @@
 const db = require('../../db-connection');
 
-const User = {};
+const Plot = {};
 
-User.addUser = (newUser, result) => {
+Plot.addPlot = (newPlot, result) => {
 
-    db.query('INSERT INTO user SET ?', newUser, (err, res) => {
-
-        if (err) {
-            console.log(3);
-            result(err, null);
-            return;
-        }
-        result(null, { ...newUser });
-    });
-};
-
-User.getUserList = (result) => {
-
-    db.query('SELECT * FROM user', (err, res) => {
+    db.query('INSERT INTO gardenplot SET ?', newPlot, (err, res) => {
 
         if (err) {
             console.log(3);
             result(err, null);
             return;
         }
-        result(null, res);
+        result(null, { ...newPlot });
     });
 };
 
-User.getUserListById = (UserID, result) => {
+Plot.getPlotsList = (result) => {
 
-    db.query(`SELECT * FROM user WHERE UserID = ${UserID}`, (err, res) => {
+    db.query('SELECT * FROM gardenplot', (err, res) => {
 
         if (err) {
             console.log(3);
@@ -41,8 +28,9 @@ User.getUserListById = (UserID, result) => {
     });
 };
 
-User.getUserListByName = (Username, result) => {
-    db.query(`SELECT * FROM user WHERE Username = "${Username}"`, (err, res) => {
+Plot.getPlotsListById = (PlotID, result) => {
+
+    db.query(`SELECT * FROM gardenplot WHERE PlotID = ${PlotID}`, (err, res) => {
 
         if (err) {
             console.log(3);
@@ -53,9 +41,8 @@ User.getUserListByName = (Username, result) => {
     });
 };
 
-User.getUserListByEmail = (email, result) => {
-
-    db.query(`SELECT * FROM user WHERE Email = "${email}"`, (err, res) => {
+Plot.getPlotsListByGardenId = (GardenID, result) => {
+    db.query(`SELECT * FROM gardenplot WHERE GardenID = "${GardenID}"`, (err, res) => {
 
         if (err) {
             console.log(3);
@@ -67,9 +54,10 @@ User.getUserListByEmail = (email, result) => {
 };
 
 
-User.updateUser = (UserID, Data, result) => {
 
-    const userData = db.query(`SELECT * FROM user Where UserID = ${UserID}`, (err, res) => {
+Plot.updatePlot = (PlotID, Data, result) => {
+
+    const PlotData = db.query(`SELECT * FROM gardenplot Where PlotID = ${PlotID}`, (err, res) => {
 
         if (err) {
             console.log(3);
@@ -77,7 +65,7 @@ User.updateUser = (UserID, Data, result) => {
             return;
         }
         console.log(res);
-        let updateQuery = 'UPDATE user SET ';
+        let updateQuery = 'UPDATE gardenplot SET ';
         Object.keys(Data).forEach((key, index) => { // Object.keys(Data) is used for iterate key-values 
             if (Data[key] !== '') {
                 updateQuery += `${key} = '${Data[key]}'`;
@@ -86,7 +74,7 @@ User.updateUser = (UserID, Data, result) => {
                 }
             }
         });
-        updateQuery += ` WHERE UserID = ${UserID}`;
+        updateQuery += ` WHERE PlotID = ${PlotID}`;
         console.log(updateQuery);
         // Execute the update query
         db.query(updateQuery, (err, result) => {
@@ -104,8 +92,8 @@ User.updateUser = (UserID, Data, result) => {
 }
 
 
-User.deleteUser = (UserID, result) => {
-    db.query(`DELETE FROM user WHERE UserID = "${UserID}"`, (err, res) => {
+Plot.deletePlot = (PlotID, result) => {
+    db.query(`DELETE FROM gardenplot WHERE PlotID = "${PlotID}"`, (err, res) => {
 
         if (err) {
             console.log(3);
@@ -115,4 +103,4 @@ User.deleteUser = (UserID, result) => {
         result(null, res);
     });
 }
-module.exports = User;  
+module.exports = Plot;  

@@ -1,36 +1,23 @@
 const db = require('../../db-connection');
 
-const User = {};
+const Partnership = {};
 
-User.addUser = (newUser, result) => {
+Partnership.addPartnership = (newPartnership, result) => {
 
-    db.query('INSERT INTO user SET ?', newUser, (err, res) => {
-
-        if (err) {
-            console.log(3);
-            result(err, null);
-            return;
-        }
-        result(null, { ...newUser });
-    });
-};
-
-User.getUserList = (result) => {
-
-    db.query('SELECT * FROM user', (err, res) => {
+    db.query('INSERT INTO partnership SET ?', newPartnership, (err, res) => {
 
         if (err) {
             console.log(3);
             result(err, null);
             return;
         }
-        result(null, res);
+        result(null, { ...newPartnership });
     });
 };
 
-User.getUserListById = (UserID, result) => {
+Partnership.getPartnershipsList = (result) => {
 
-    db.query(`SELECT * FROM user WHERE UserID = ${UserID}`, (err, res) => {
+    db.query('SELECT * FROM partnership', (err, res) => {
 
         if (err) {
             console.log(3);
@@ -41,8 +28,9 @@ User.getUserListById = (UserID, result) => {
     });
 };
 
-User.getUserListByName = (Username, result) => {
-    db.query(`SELECT * FROM user WHERE Username = "${Username}"`, (err, res) => {
+Partnership.getPartnershipsListById = (PartnershipID, result) => {
+
+    db.query(`SELECT * FROM partnership WHERE PartnershipID = ${PartnershipID}`, (err, res) => {
 
         if (err) {
             console.log(3);
@@ -53,9 +41,8 @@ User.getUserListByName = (Username, result) => {
     });
 };
 
-User.getUserListByEmail = (email, result) => {
-
-    db.query(`SELECT * FROM user WHERE Email = "${email}"`, (err, res) => {
+Partnership.getPartnershipsListByName = (Name, result) => {
+    db.query(`SELECT * FROM partnership WHERE Name = "${Name}"`, (err, res) => {
 
         if (err) {
             console.log(3);
@@ -67,9 +54,10 @@ User.getUserListByEmail = (email, result) => {
 };
 
 
-User.updateUser = (UserID, Data, result) => {
 
-    const userData = db.query(`SELECT * FROM user Where UserID = ${UserID}`, (err, res) => {
+Partnership.updatePartnership = (PartnershipID, Data, result) => {
+
+    const PartnershipData = db.query(`SELECT * FROM partnership Where PartnershipID = ${PartnershipID}`, (err, res) => {
 
         if (err) {
             console.log(3);
@@ -77,7 +65,7 @@ User.updateUser = (UserID, Data, result) => {
             return;
         }
         console.log(res);
-        let updateQuery = 'UPDATE user SET ';
+        let updateQuery = 'UPDATE partnership SET ';
         Object.keys(Data).forEach((key, index) => { // Object.keys(Data) is used for iterate key-values 
             if (Data[key] !== '') {
                 updateQuery += `${key} = '${Data[key]}'`;
@@ -86,7 +74,7 @@ User.updateUser = (UserID, Data, result) => {
                 }
             }
         });
-        updateQuery += ` WHERE UserID = ${UserID}`;
+        updateQuery += ` WHERE PartnershipID = ${PartnershipID}`;
         console.log(updateQuery);
         // Execute the update query
         db.query(updateQuery, (err, result) => {
@@ -104,8 +92,8 @@ User.updateUser = (UserID, Data, result) => {
 }
 
 
-User.deleteUser = (UserID, result) => {
-    db.query(`DELETE FROM user WHERE UserID = "${UserID}"`, (err, res) => {
+Partnership.deletePartnership = (PartnershipID, result) => {
+    db.query(`DELETE FROM partnership WHERE PartnershipID = "${PartnershipID}"`, (err, res) => {
 
         if (err) {
             console.log(3);
@@ -115,4 +103,4 @@ User.deleteUser = (UserID, result) => {
         result(null, res);
     });
 }
-module.exports = User;  
+module.exports = Partnership;  
