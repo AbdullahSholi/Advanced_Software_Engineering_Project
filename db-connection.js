@@ -13,7 +13,7 @@ const con = mysql.createConnection({
 con.connect( (err)=>{
     if(err) throw err;
     console.log(" Connected Successfully to DB ");
-    con.query("CREATE DATABASE IF NOT EXISTS sql12712172", function(err, results){
+    con.query("CREATE DATABASE IF NOT EXISTS greenthumb", function(err, results){
         if(err){
             throw err;
         } 
