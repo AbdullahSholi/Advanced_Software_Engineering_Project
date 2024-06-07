@@ -98,11 +98,29 @@ const deleteSpecificGuideFromList = (req, res) => {
   });
   };
 
+  const addComment = (req, res) => {
+    const newComment = req.body;
+    console.log(req.body);
+    Guide.addComment(newComment, (err, data) => {
+        console.log(1);
+      if (err) {
+        res.status(500).send({
+          message:
+            err.message || 'Some error occurred while creating the task.'
+        });
+      } else {
+        console.log(1);
+        res.send(data);
+      }
+    });
+  };
+
 module.exports = {
     addGuide ,
     getGuide ,
     getGuideById,
     getGuideListByTitle,
     updateGuideList,
-    deleteSpecificGuideFromList
+    deleteSpecificGuideFromList,
+    addComment
 };

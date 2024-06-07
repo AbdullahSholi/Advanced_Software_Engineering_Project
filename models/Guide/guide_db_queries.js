@@ -103,4 +103,18 @@ Guide.deleteSpecificGuideFromList = (GuideID, result) => {
   });
 }
 
+
+Guide.addComment = (newComment, result) => {
+
+    db.query('INSERT INTO comments SET ?', newComment, (err, res) => {
+        
+      if (err) {
+        console.log(3);
+        result(err, null);
+        return;
+      }
+      result(null, { ...newComment });
+    });
+  };
+
 module.exports = Guide;  
