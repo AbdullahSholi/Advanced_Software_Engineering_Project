@@ -21,6 +21,11 @@ const partnershipController = require('./controllers/Partnership/partnership');
 const resourceController = require('./controllers/Resource/resource');
 const exchangeController = require('./controllers/Exchange/exchange');
 const activityController = require('./controllers/Activity/activity');
+//------------
+const authMiddleware = require('../Advanced_Software_Engineering_Project/middlewares/authMiddleware');
+const roleMiddleware = require('../Advanced_Software_Engineering_Project/middlewares/roleMiddleware');
+const { getPublicData, getUserData, getAdminData } = require('../Advanced_Software_Engineering_Project/controllers/User/user');
+//------------
 
 // Create a new task
 router.post('/GreenThumb/api/v1/new-garden', gardenController.addGarden);
@@ -124,8 +129,16 @@ router.get("/GreenThumb/api/v1/activities-list-by-plot/:id", activityController.
 router.patch("/GreenThumb/api/v1/activity/:id", activityController.updateActivity)
 router.delete("/GreenThumb/api/v1/activity/:id", activityController.deleteActivity)
 
+//---For access data base on the role -----
+router.get('/GreenThumb/api/v1/public', getPublicData);
+router.get('/GreenThumb/api/v1/user', authMiddleware, roleMiddleware(['user', 'admin']), userController.getUserData);
+router.get('/GreenThumb/api/v1/admin', authMiddleware, roleMiddleware(['admin']), userController.getAdminData);
+//--------
 
-
+//------------
+router.post('/GreenThumb/api/v1/register',userController.register);
+router.post('/GreenThumb/api/v1/login',userController.login);
+//------------
 
 // Generate Report
 router.get("/GreenThumb/api/v1/generate-report", (req, res)=>{
