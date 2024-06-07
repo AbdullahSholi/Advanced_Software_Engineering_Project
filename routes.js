@@ -54,6 +54,9 @@ router.get("/GreenThumb/api/v1/guide-list-by-title/:title", guideController.getG
 router.patch("/GreenThumb/api/v1/guide/:id", guideController.updateGuideList);
 router.delete("/GreenThumb/api/v1/specific-guide-from-list/:id", guideController.deleteSpecificGuideFromList);
 
+// Comment 
+router.post('/GreenThumb/api/v1/add-comment', guideController.addComment);
+
 
 // VolunteerEvent
 
@@ -105,7 +108,6 @@ router.delete("/GreenThumb/api/v1/resource/:id", resourceController.deleteResour
 router.post('/GreenThumb/api/v1/new-exchange', exchangeController.addExchange);
 router.get("/GreenThumb/api/v1/exchanges-list", exchangeController.getExchangesList);
 router.get("/GreenThumb/api/v1/exchange/:id", exchangeController.getExchangeById);
-router.get("/GreenThumb/api/v1/exchanges-list-by-resource/:id", exchangeController.getExchangesListByResourceId);
 router.get("/GreenThumb/api/v1/exchanges-list-by-offer-user/:id", exchangeController.getExchangesListByOfferUserId);
 router.get("/GreenThumb/api/v1/exchanges-list-by-requestor-user/:id", exchangeController.getExchangesListByRequestorUserId);
 router.patch("/GreenThumb/api/v1/exchange/:id", exchangeController.updateExchange)
@@ -123,6 +125,34 @@ router.patch("/GreenThumb/api/v1/activity/:id", activityController.updateActivit
 router.delete("/GreenThumb/api/v1/activity/:id", activityController.deleteActivity)
 
 
+
+
+// Generate Report
+router.get("/GreenThumb/api/v1/generate-report", (req, res)=>{
+    ///////////////////////////////////////
+const PDFDocument = require('pdfkit');
+const fs = require('fs');
+
+// Create a new PDF document
+const doc = new PDFDocument();
+
+// Pipe the PDF to a file
+doc.pipe(fs.createWriteStream('report.pdf'));
+
+// Add content to the PDF
+doc
+  .fontSize(20)
+  .text('Sample Report', { align: 'center' });
+
+doc
+  .fontSize(12)
+  .text('This is a sample report For Crops');
+
+doc.end();
+res.send({status: "Success"});
+
+///////////////////////////
+} )
 
 module.exports =  router;
     

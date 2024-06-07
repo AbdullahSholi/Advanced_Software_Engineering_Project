@@ -41,17 +41,7 @@ Exchange.getExchangesListById = (ExchangeID, result) => {
     });
 };
 
-Exchange.getExchangesListByResourceId = (ResourceID, result) => {
-    db.query(`SELECT * FROM exchange WHERE ResourceID = "${ResourceID}"`, (err, res) => {
 
-        if (err) {
-            console.log(3);
-            result(err, null);
-            return;
-        }
-        result(null, res);
-    });
-};
 
 Exchange.getExchangesListByOfferUserId = (OfferUserID, result) => {
     db.query(`SELECT * FROM exchange WHERE OfferUserID = "${OfferUserID}"`, (err, res) => {

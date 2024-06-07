@@ -50,21 +50,7 @@ const getExchangeById = (req, res) => {
     });
 };
 
-const getExchangesListByResourceId = (req, res) => {
-    console.log(req.params.id);
-    Exchange.getExchangesListByResourceId(req.params.id, (err, data) => {
-        console.log(1);
-        if (err) {
-            res.status(500).send({
-                message:
-                    err.message || 'Some error occurred while creating the task.'
-            });
-        } else {
-            console.log(1);
-            res.send(data);
-        }
-    });
-};
+
 
 const getExchangesListByOfferUserId = (req, res) => {
     console.log(req.params.id);
@@ -151,7 +137,6 @@ module.exports = {
     getExchangesList,
     getExchangeById,
     getExchangesListByStatus,
-    getExchangesListByResourceId,
     getExchangesListByOfferUserId,
     getExchangesListByRequestorUserId,
     updateExchange,
