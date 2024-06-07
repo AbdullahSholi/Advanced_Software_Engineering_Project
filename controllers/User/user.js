@@ -2,8 +2,8 @@ const User = require('../../models/User/user_db_queries');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const users1 = [
-  { id: 1, name: 'User', email: 'user@example.com', password: bcrypt.hashSync('password', 10), role: 'user' },
-  { id: 2, name: 'Admin', email: 'admin@example.com', password: bcrypt.hashSync('password', 10), role: 'admin' }
+  { UserId: 1, Username: 'User', Email: 'user@example.com', Password: bcrypt.hashSync('password', 10), Role: 'user' },
+  { UserId: 2, USername: 'Admin', Email: 'admin@example.com', Password: bcrypt.hashSync('password', 10), Role: 'admin' }
 ];
 
 const creatNewUser = (req, res) => {
@@ -133,53 +133,45 @@ const getAdminData = (req, res) => {
   res.json({ message: `Hello ${req.user.name}, this is admin data` });
 };
 
+
 const register = async (req, res) => {
-  const { name, email, password, role } = req.body;
+  const { UserID ,Username, Email, Password, Role } = req.body;
 
-  // Basic validation
-  if (!name || !email || !password || !role) {
-    return res.status(400).json({ message: 'Please provide name, email, password, and role' });
-  }
+  console.log(req.body);
+  User.addUser(req.body, res, (err, data) => {
+    console.log(1);
+    if (err) {
+      res.status(500).send({
+        message:
+          err.message || 'Some error occurred while creating the task.'
+      });
+    } else {
+      console.log(1);
+      res.send(data);
+    }
+  });
 
-  // Check if the user already exists
-  const userExists = users1.find(u => u.email === email);
-  if (userExists) {
-    return res.status(400).json({ message: 'User already exists' });
-  }
-
-  // Hash the password
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  // Create new user
-  const newUser = {
-    id: users1.length + 1,
-    name,
-    email,
-    password: hashedPassword,
-    role
-  };
-
-  // Add user to mock database
-  users1.push(newUser);
-
-  // Generate JWT token
-  const payload = { id: newUser.id, name: newUser.name, role: newUser.role };
-  const token = jwt.sign(payload, 'Group@971', { expiresIn: '1h' });
-
-  res.status(201).json({ message: 'User registered successfully', token });
+  
 };
 
 const login = async (req, res) => {
-  const { email, password } = req.body;
-  const user = users1.find(u => u.email === email);
-  if (!user) return res.status(400).json({ message: 'User not found' });
+  const { Email, Password } = req.body;
 
-  const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
+  console.log(req.body);
+  User.login(req.body, res, (err, data) => {
+    console.log(1);
+    if (err) {
+      res.status(500).send({
+        message:
+          err.message || 'Some error occurred while creating the task.'
+      });
+    } else {
+      console.log(1);
+      res.send(data);
+    }
+  });
 
-  const payload = { id: user.id, name: user.name, role: user.role };
-  const token = jwt.sign(payload, 'Group@971', { expiresIn: '1h' });
-  res.json({ token });
+
 };
 
 module.exports = {
