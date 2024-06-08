@@ -1,18 +1,42 @@
 const db = require('../../db-connection');
 
+const { promisify } = require('util');
+
+// Promisify the db.query method for async/await use
+const query = promisify(db.query).bind(db);
 const Garden = {};
 
-Garden.addGarden = (newGarden, result) => {
+Garden.addGarden = async (newGarden, result) => {
 
-    db.query('INSERT INTO garden SET ?', newGarden, (err, res) => {
+    const insertData = await query('INSERT INTO garden SET ?', newGarden);
+    // const getCommonLength = await query('SELECT * FROM user_garden');
+    // const insertDataToCommon = await query('INSERT INTO user_garden SET ?', { UserGardenID: getCommonLength.length+1, UserID: newGarden.UserID, GardenID: newGarden.GardenID });
+    
+    // db.query('INSERT INTO garden SET ?', newGarden, (err, res) => {
 
-        if (err) {
-            console.log(3);
-            result(err, null);
-            return;
-        }
+    //     if (err) {
+    //         console.log(3);
+    //         result(err, null);
+    //         return;
+    //     }
         result(null, { ...newGarden });
-    });
+    // });
+};
+
+Garden.addUserGarden = async (newUserGarden, result) => {
+
+    const getCommonLength = await query('SELECT * FROM user_garden');
+    const insertDataToCommon = await query('INSERT INTO user_garden SET ?', { UserGardenID: getCommonLength.length+1, UserID: newUserGarden.UserID, GardenID: newUserGarden.GardenID });
+    
+    // db.query('INSERT INTO garden SET ?', newGarden, (err, res) => {
+
+    //     if (err) {
+    //         console.log(3);
+    //         result(err, null);
+    //         return;
+    //     }
+        result(null, { ...newUserGarden });
+    // });
 };
 
 Garden.getGardenList = (result) => {

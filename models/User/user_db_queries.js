@@ -11,6 +11,7 @@ const User = {};
 
 User.addUser = async (newUser, res, result) => {
     console.log("&&&");
+    global.userId = newUser.UserID;
 
     // Basic validation
     if (!newUser.Username || !newUser.Email || !newUser.Password || !newUser.Role) {

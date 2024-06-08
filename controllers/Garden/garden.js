@@ -17,6 +17,23 @@ const addGarden = (req, res) => {
     });
   };
 
+  const addUserGarden = (req, res) => {
+    const newUserGarden = req.body;
+    console.log(req.body);
+    Garden.addUserGarden(newUserGarden, (err, data) => {
+        console.log(1);
+      if (err) {
+        res.status(500).send({
+          message:
+            err.message || 'Some error occurred while creating the task.'
+        });
+      } else {
+        console.log(1);
+        res.send(data);
+      }
+    });
+  };  
+
 const getGardenList = (req, res) => {
     console.log(req.body);
     Garden.getGardenList( (err, data) => {
@@ -118,6 +135,7 @@ const deleteSpecificGardenFromList = (req, res) => {
 
 module.exports = {
     addGarden,
+    addUserGarden,
     getGardenList,
     getGardenListById,
     getGardenListByName,

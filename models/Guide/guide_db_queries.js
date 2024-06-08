@@ -2,16 +2,16 @@ const db = require('../../db-connection');
 
 const Guide = {};
 
-Guide.addGuide = (newGuide, result) => {
-
-    db.query('INSERT INTO guide SET ?', newGuide, (err, res) => {
+Guide.addGuide = async (newGuide, result) => {
+    // console.log(global.userId)
+    db.query('INSERT INTO guide SET ?', {GuideID: newGuide.GuideID, AuthorUserID: newGuide.AuthorUserID, Title: newGuide.Title, Content: newGuide.Content, Rate: newGuide.Rate}, (err, res) => {
         
       if (err) {
         console.log(3);
         result(err, null);
         return;
       }
-      result(null, { ...newGuide });
+      result(null, {GuideID: newGuide.GuideID, AuthorUserID: newGuide.AuthorUserID, Title: newGuide.Title, Content: newGuide.Content, Rate: newGuide.Rate});
     });
   };
 
@@ -116,5 +116,55 @@ Guide.addComment = (newComment, result) => {
       result(null, { ...newComment });
     });
   };
+
+  Guide.commentsList = ( result) => {
+
+    db.query('SELECT * FROM comments',  (err, res) => {
+        
+        if (err) {
+        console.log(3);
+        result(err, null);
+        return;
+        }
+        result(null, res);
+    });
+    };
+
+
+    Guide.updateComment = (CommentID, Data, result) => {
+
+        const guideData = db.query(`SELECT * FROM comments Where CommentID = ${CommentID}`, (err, res) => {
+    
+            if (err) {
+                console.log(3);
+                result(err, null);
+                return;
+            }
+            console.log(res);
+            let updateQuery = 'UPDATE comments SET ';
+            Object.keys(Data).forEach((key, index) => { // Object.keys(Data) is used for iterate key-values 
+                if (Data[key] !== '') {
+                    updateQuery += `${key} = '${Data[key]}'`;
+                    if (index < Object.keys(Data).length - 1) {
+                        updateQuery += ', ';
+                    }
+                }
+            });
+            updateQuery += ` WHERE CommentID = ${CommentID}`;
+            console.log(updateQuery);
+            // Execute the update query
+            db.query(updateQuery, (err, result) => {
+                if (err) {
+                    console.error('Error updating record:', err);
+                    return;
+                }
+                console.log('Record updated successfully');
+            });
+    
+            result(null, res);
+    
+        });
+    
+    }
 
 module.exports = Guide;  
