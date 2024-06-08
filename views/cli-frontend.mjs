@@ -594,6 +594,103 @@ const Exchange = (UserID) => {
     });
 }
 
+const Resources = (UserID) => {
+  inquirer
+    .prompt({
+      type: 'list',
+      name: 'action',
+      message: 'What would you like to do?',
+      choices: [
+        'Add Resource',
+        'Display All Resources',
+        'Display Resource by id',
+        'Display Resources by type',
+        'Update Resource data',
+        'Delete a specific Resource',
+        "Enter to Partnership window",
+        'Go Back'
+      ]
+    })
+    .then((answers) => {
+      switch (answers.action) {
+        case 'Add Resource':
+          SelectExchange(UserID);
+          // AddResource(UserID);
+          break;
+        case 'Display All Resources':
+          DisplayAllResources(UserID);
+          break;
+        case 'Display Resource by id':
+          DisplayResourceById(UserID);
+          break;
+        case 'Display Resources by type':
+          DisplayResourcesByType(UserID);
+          break;
+
+        case 'Update Resource data':
+          UpdateResourceData(UserID);
+          break;
+        case 'Delete a specific Resource':
+          DeleteASpecificResource(UserID);
+          break;
+            case 'Enter to Partnership window':
+              Partnership(UserID);
+              break;    
+        case 'Go Back':
+          Exchange(UserID);
+          break;
+        default:
+          console.log('Invalid choice');
+      }
+    });
+}
+
+const Partnership = (UserID)=>{
+  inquirer
+    .prompt({
+      type: 'list',
+      name: 'action',
+      message: 'What would you like to do?',
+      choices: [
+        'Add Partnership',
+        'Display All Partnerships',
+        'Display Partnership by id',
+        'Display Partnerships by name',
+        'Update Partnership data',
+        'Delete a specific Partnership',
+        'Go Back'
+      ]
+    })
+    .then((answers) => {
+      switch (answers.action) {
+        case 'Add Partnership':
+          SelectResource(UserID);
+          break;
+        case 'Display All Partnerships':
+          DisplayAllPartnerships(UserID);
+          break;
+        case 'Display Partnership by id':
+          DisplayPartnershipById(UserID);
+          break;
+        case 'Display Partnerships by name':
+          DisplayPartnershipsByName(UserID);
+          break;
+
+        case 'Update Partnership data':
+          UpdatePartnershipData(UserID);
+          break;
+        case 'Delete a specific Partnership':
+          DeleteASpecificPartnership(UserID);
+          break;
+        case 'Go Back':
+          Resources(UserID);
+          break;
+        default:
+          console.log('Invalid choice');
+      }
+    });
+}
+
 
 
 ///////////////////////////
@@ -661,7 +758,7 @@ const AddGarden = (UserID) => {
             // Handle success
             console.log('Response2');
 
-            axios.get("http://localhost:3000/GreenThumb/api/v1/gardens-list").then(response3 => {
+            axios.get("http://localhost:3000/GreenThumb/api/v1/user-gardens-list").then(response3 => {
               axios.post('http://localhost:3000/GreenThumb/api/v1/new-user-garden', {
                 UserGardenID: response3.data.length + 1,
                 UserID: UserID,
@@ -2411,7 +2508,656 @@ const DeleteASpecificExchange = (UserID) => {
 /* ***************** */
 
 
+// Resource functions
+/* ***************** */
 
+const SelectExchange = async (UserID)=>{
+  try {
+    const response = await axios.get('http://localhost:3000/GreenThumb/api/v1/exchanges-list');
+    console.log(response.data);
+
+    const answers = await inquirer.prompt({
+      type: 'list',
+      name: 'ExchangeID',
+      message: 'Select specific exchange :',
+      choices: response.data.map(exchange => exchange.ExchangeID.toString()) 
+    });
+
+    const selectedExchange = response.data.find(exchange => exchange.ExchangeID.toString() === answers.ExchangeID);
+
+    if (selectedExchange) {
+      console.log(selectedExchange);
+      AddResource(UserID, selectedExchange.ExchangeID);
+    } else {
+      console.error('Selected Exchange not found.');
+    }
+  } catch (error) {
+    console.error('Error fetching plots:', error);
+  }
+}
+
+const AddResource = (UserID, ExchangeID) => {
+  
+  inquirer
+    .prompt([
+      {
+        type: 'input',
+        name: 'type',
+        message: 'Enter resource type:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter resource type.';
+          }
+        }
+      },
+      {
+        type: 'input',
+        name: 'description',
+        message: 'Enter resource description:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter resource description.';
+          }
+        }
+      },
+      {
+        type: 'input',
+        name: 'availablequantity',
+        message: 'Enter available qunatity:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter available qunatity.';
+          }
+        }
+      },
+    ])
+    .then(answers => {
+      console.log('Enter Resource data');
+      console.log(answers)
+      axios.get("http://localhost:3000/GreenThumb/api/v1/resources-list").then(response1 => {
+        // Define the URL to which you want to send the POST request
+        const url = 'http://localhost:3000/GreenThumb/api/v1/new-resource';
+        console.log(response1.data.length + 1);
+        // Data to be sent in the POST request
+        const postData = {
+          ResourceID: response1.data.length + 1,
+          Type: answers.type,
+          Description: answers.description,
+          AvailableQuantity: answers.availablequantity
+        };
+
+        axios.post(url, postData)
+          .then(response2 => {
+            // Handle success
+            console.log('Response2');
+
+            axios.get("http://localhost:3000/GreenThumb/api/v1/exchange-resource-list").then(response3 => { // arrive here ( also edit garden )
+              axios.post('http://localhost:3000/GreenThumb/api/v1/new-exchange-resource', {
+                Exchange_Resource_ID: response3.data.length + 1,
+                ExchangeID: ExchangeID,
+                ResourceID: response1.data.length + 1
+              })
+                .then(response4 => {
+                  // Handle success
+                  console.log('Response4');
+                  Resources(UserID);
+                  // mainMenu(response.data.user.UserID);
+
+
+                })
+                .catch(error => {
+                  // Handle error
+                  console.error('Error:', error);
+                });
+            }).catch(error => {
+              console.error('Error:', error);
+            })
+
+
+            /////////////////////
+
+          }).catch(error => {
+            console.error('Error:', error);
+          })
+
+
+
+      })
+        .catch(error => {
+          // Handle error
+          console.error('Error:', error);
+        });
+
+    })
+    .catch((error) => {
+      console.error('Login failed:', error);
+    });
+  // Garden(UserID);
+}
+
+const DisplayAllResources = (UserID) => {
+  axios.get("http://localhost:3000/GreenThumb/api/v1/resources-list").then(response => {
+    console.log(response.data);
+    Resources(UserID);
+  }).catch(error => {
+
+  })
+}
+
+const DisplayResourceById = (UserID) => {
+  inquirer.prompt(
+    [
+      {
+        type: 'input',
+        name: 'ResourceID',
+        message: 'Enter your Resource Id:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter your Resource Id.';
+          }
+        }
+      },
+    ]
+  ).then(answers => {
+    axios.get(`http://localhost:3000/GreenThumb/api/v1/resource/${answers.ResourceID}`).then(response => {
+      console.log(response.data);
+      Resources(UserID);
+    }).catch(error => {
+      console.error('Error message:', error);
+    })
+  }).catch((error) => {
+    console.error('Failed to get garden via id:', error);
+    // Optionally, you can return to the main menu even in case of an error
+    Resources(UserID);
+
+  })
+
+}
+
+const DisplayResourcesByType = (UserID) => {
+  inquirer.prompt(
+    [
+      {
+        type: 'input',
+        name: 'type',
+        message: 'Enter resource type:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter resource type.';
+          }
+        }
+      },
+    ]
+  ).then(answers => {
+    axios.get(`http://localhost:3000/GreenThumb/api/v1/resources-list-by-type/${answers.type}`).then(response => {
+      console.log(response.data);
+      Resources(UserID);
+    }).catch(error => {
+      console.error('Error message:', error);
+    })
+  }).catch((error) => {
+    console.error('Failed to get resource via id:', error);
+    // Optionally, you can return to the main menu even in case of an error
+    Resources(UserID);
+
+  })
+}
+
+
+const UpdateResourceData = (UserID) => {
+  inquirer.prompt(
+    [
+      {
+        type: 'input',
+        name: 'ResourceID',
+        message: 'Enter resource id:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter resource id.';
+          }
+        }
+      },
+    ]
+  ).then(answers => {
+    console.log("Enter data to update")
+
+    inquirer.prompt([
+      {
+        type: 'input',
+        name: 'type',
+        message: 'Enter resource type:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter resource type.';
+          }
+        }
+      },
+      {
+        type: 'input',
+        name: 'description',
+        message: 'Enter resource description:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter resource description.';
+          }
+        }
+      },
+      {
+        type: 'input',
+        name: 'availablequantity',
+        message: 'Enter available quantity:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter available quantity.';
+          }
+        }
+      },
+    ]).then(answers1 => {
+      axios.patch(`http://localhost:3000/GreenThumb/api/v1/resource/${answers.ResourceID}`, {
+        Type: answers1.Type,
+        AvailableQuantity: answers1.availablequantity,
+        Description: answers1.description
+      }).then(response => {
+        console.log({
+          ResourceID: answers.ResourceID,
+          Type: answers1.Type,
+          AvailableQuantity: answers1.availablequantity,
+          Description: answers1.description
+        });
+
+        Resources(UserID);
+      }).catch(error => {
+        console.error('Error message:', error);
+      })
+    }).catch(error => {
+
+    })
+
+
+  }).catch((error) => {
+    console.error('Failed to get resource via id:', error);
+    // Optionally, you can return to the main menu even in case of an error
+    Resources(UserID);
+
+  })
+}
+
+const DeleteASpecificResource = (UserID) => {
+  inquirer.prompt(
+    [
+      {
+        type: 'input',
+        name: 'ResourceID',
+        message: 'Enter your resource Id:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter resource Id.';
+          }
+        }
+      },
+    ]
+  ).then(answers => {
+    axios.delete(`http://localhost:3000/GreenThumb/api/v1/resource/${answers.ResourceID}`).then(response => {
+      console.log(response.data);
+      Resources(UserID);
+    }).catch(error => {
+      console.error('Error message:', error);
+    })
+  }).catch((error) => {
+    console.error('Failed to get resource via id:', error);
+    // Optionally, you can return to the main menu even in case of an error
+    Resources(UserID);
+
+  })
+}
+
+/* ***************** */
+
+
+// Resource functions
+/* ***************** */
+
+const SelectResource = async (UserID)=>{
+  try {
+    const response = await axios.get('http://localhost:3000/GreenThumb/api/v1/resources-list');
+    console.log(response.data);
+
+    const answers = await inquirer.prompt({
+      type: 'list',
+      name: 'ResourceID',
+      message: 'Select specific resource :',
+      choices: response.data.map(resource => resource.ResourceID.toString()) 
+    });
+
+    const selectedResource = response.data.find(resource => resource.ResourceID.toString() === answers.ResourceID);
+
+    if (selectedResource) {
+      console.log(selectedResource);
+      addPartnership(UserID, selectedResource.ResourceID);
+    } else {
+      console.error('Selected Resource not found.');
+    }
+  } catch (error) {
+    console.error('Error fetching resources:', error);
+  }
+}
+
+const addPartnership = (UserID, ResourceID) => {
+  
+  inquirer
+    .prompt([
+      {
+        type: 'input',
+        name: 'Name',
+        message: 'Enter partner name:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter partner name.';
+          }
+        }
+      },
+      {
+        type: 'input',
+        name: 'type',
+        message: 'Enter partnership type:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter partnership type.';
+          }
+        }
+      },
+      {
+        type: 'input',
+        name: 'contactinfo',
+        message: 'Enter contact info:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter contact info.';
+          }
+        }
+      },
+    ])
+    .then(answers => {
+      console.log('Enter Partnership data');
+      console.log(answers)
+      axios.get("http://localhost:3000/GreenThumb/api/v1/partnerships-list").then(response1 => {
+        // Define the URL to which you want to send the POST request
+        const url = 'http://localhost:3000/GreenThumb/api/v1/new-partnership';
+        console.log(response1.data.length + 1);
+        // Data to be sent in the POST request
+        const postData = {
+          PartnershipID: response1.data.length + 1,
+          Type: answers.type,
+          Name: answers.Name,
+          ContactInfo: answers.contactinfo
+        };
+
+        axios.post(url, postData)
+          .then(response2 => {
+            // Handle success
+            console.log('Response2');
+
+            axios.get("http://localhost:3000/GreenThumb/api/v1/resource-partnership-list").then(response3 => { // arrive here ( also edit garden )
+              axios.post('http://localhost:3000/GreenThumb/api/v1/new-resource-partnership', {
+                Resource_Partnership_ID: response3.data.length + 1,
+                PartnershipID: response1.data.length + 1,
+                ResourceID: ResourceID
+              })
+                .then(response4 => {
+                  // Handle success
+                  console.log('Response4');
+                  Partnership(UserID);
+                  // mainMenu(response.data.user.UserID);
+
+
+                })
+                .catch(error => {
+                  // Handle error
+                  console.error('Error:', error);
+                });
+            }).catch(error => {
+              console.error('Error:', error);
+            })
+
+
+            /////////////////////
+
+          }).catch(error => {
+            console.error('Error:', error);
+          })
+
+
+
+      })
+        .catch(error => {
+          // Handle error
+          console.error('Error:', error);
+        });
+
+    })
+    .catch((error) => {
+      console.error('Login failed:', error);
+    });
+  // Garden(UserID);
+}
+
+const DisplayAllPartnerships = (UserID) => {
+  axios.get("http://localhost:3000/GreenThumb/api/v1/partnerships-list").then(response => {
+    console.log(response.data);
+    Partnership(UserID);
+  }).catch(error => {
+
+  })
+}
+
+const DisplayPartnershipById = (UserID) => {
+  inquirer.prompt(
+    [
+      {
+        type: 'input',
+        name: 'PartnershipID',
+        message: 'Enter your Partnership Id:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter your Partnership Id.';
+          }
+        }
+      },
+    ]
+  ).then(answers => {
+    axios.get(`http://localhost:3000/GreenThumb/api/v1/partnership/${answers.PartnershipID}`).then(response => {
+      console.log(response.data);
+      Partnership(UserID);
+    }).catch(error => {
+      console.error('Error message:', error);
+    })
+  }).catch((error) => {
+    console.error('Failed to get partnership via id:', error);
+    // Optionally, you can return to the main menu even in case of an error
+    Partnership(UserID);
+
+  })
+
+}
+
+const DisplayPartnershipsByName = (UserID) => {
+  inquirer.prompt(
+    [
+      {
+        type: 'input',
+        name: 'name',
+        message: 'Enter partnership name:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter partnership name.';
+          }
+        }
+      },
+    ]
+  ).then(answers => {
+    axios.get(`http://localhost:3000/GreenThumb/api/v1/partnerships-list-by-name/${answers.name}`).then(response => {
+      console.log(response.data);
+      Partnership(UserID);
+    }).catch(error => {
+      console.error('Error message:', error);
+    })
+  }).catch((error) => {
+    console.error('Failed to get partnership via id:', error);
+    // Optionally, you can return to the main menu even in case of an error
+    Partnership(UserID);
+
+  })
+}
+
+
+const UpdatePartnershipData = (UserID) => {
+  inquirer.prompt(
+    [
+      {
+        type: 'input',
+        name: 'PartnershipID',
+        message: 'Enter Partnership id:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter Partnership id.';
+          }
+        }
+      },
+    ]
+  ).then(answers => {
+    console.log("Enter data to update")
+
+    inquirer.prompt([
+      {
+        type: 'input',
+        name: 'name',
+        message: 'Enter Partnership name:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter Partnership name.';
+          }
+        }
+      },
+      {
+        type: 'input',
+        name: 'type',
+        message: 'Enter Partnership type:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter Partnership type.';
+          }
+        }
+      },
+      {
+        type: 'input',
+        name: 'contactinfo',
+        message: 'Enter Partnership contact info :',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter Partnership contact info.';
+          }
+        }
+      },
+    ]).then(answers1 => {
+      axios.patch(`http://localhost:3000/GreenThumb/api/v1/partnership/${answers.PartnershipID}`, {
+        Type: answers1.type,
+        ContactInfo: answers1.contactinfo,
+        Name: answers1.name
+      }).then(response => {
+        console.log({
+          PartnershipID: answers.PartnershipID,
+          Type: answers1.type,
+          ContactInfo: answers1.contactinfo,
+          Name: answers1.name
+        });
+
+        Partnership(UserID);
+      }).catch(error => {
+        console.error('Error message:', error);
+      })
+    }).catch(error => {
+
+    })
+
+
+  }).catch((error) => {
+    console.error('Failed to get resource via id:', error);
+    // Optionally, you can return to the main menu even in case of an error
+    Partnership(UserID);
+
+  })
+}
+
+const DeleteASpecificPartnership = (UserID) => {
+  inquirer.prompt(
+    [
+      {
+        type: 'input',
+        name: 'PartnershipID',
+        message: 'Enter your Partnership Id:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter Partnership Id.';
+          }
+        }
+      },
+    ]
+  ).then(answers => {
+    axios.delete(`http://localhost:3000/GreenThumb/api/v1/partnership/${answers.PartnershipID}`).then(response => {
+      console.log(response.data);
+      Partnership(UserID);
+    }).catch(error => {
+      console.error('Error message:', error);
+    })
+  }).catch((error) => {
+    console.error('Failed to get Partnership via id:', error);
+    // Optionally, you can return to the main menu even in case of an error
+    Partnership(UserID);
+
+  })
+}
+
+/* ***************** */
 
 /////////////////////
 

@@ -15,9 +15,35 @@ Exchange.addExchange = (newExchange, result) => {
     });
 };
 
+Exchange.addExchangeResource = (newExchange, result) => {
+
+    db.query('INSERT INTO exchange_resource SET ?', newExchange, (err, res) => {
+
+        if (err) {
+            console.log(3);
+            result(err, null);
+            return;
+        }
+        result(null, { ...newExchange });
+    });
+};
+
 Exchange.getExchangesList = (result) => {
 
     db.query('SELECT * FROM exchange', (err, res) => {
+
+        if (err) {
+            console.log(3);
+            result(err, null);
+            return;
+        }
+        result(null, res);
+    });
+};
+
+Exchange.getExchangeResourceList = (result) => {
+
+    db.query('SELECT * FROM exchange_resource', (err, res) => {
 
         if (err) {
             console.log(3);

@@ -15,9 +15,35 @@ Resource.addResource = (newResource, result) => {
     });
 };
 
+Resource.addResourcePartnership = (newResource, result) => {
+
+    db.query('INSERT INTO resource_partnership SET ?', newResource, (err, res) => {
+
+        if (err) {
+            console.log(3);
+            result(err, null);
+            return;
+        }
+        result(null, { ...newResource });
+    });
+};
+
 Resource.getResourcesList = (result) => {
 
     db.query('SELECT * FROM resource', (err, res) => {
+
+        if (err) {
+            console.log(3);
+            result(err, null);
+            return;
+        }
+        result(null, res);
+    });
+};
+
+Resource.getResourcePartnershipList = (result) => {
+
+    db.query('SELECT * FROM resource_partnership', (err, res) => {
 
         if (err) {
             console.log(3);

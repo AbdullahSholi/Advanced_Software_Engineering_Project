@@ -17,10 +17,43 @@ const addExchange = (req, res) => {
     });
 };
 
+const addExchangeResource = (req, res) => {
+    const newExchange = req.body;
+    console.log(req.body);
+    Exchange.addExchangeResource(newExchange, (err, data) => {
+        console.log(1);
+        if (err) {
+            res.status(500).send({
+                message:
+                    err.message || 'Some error occurred while creating the task.'
+            });
+        } else {
+            console.log(1);
+            res.send(data);
+        }
+    });
+};
+
 
 const getExchangesList = (req, res) => {
     console.log(req.body);
     Exchange.getExchangesList((err, data) => {
+        console.log(1);
+        if (err) {
+            res.status(500).send({
+                message:
+                    err.message || 'Some error occurred while creating the task.'
+            });
+        } else {
+            console.log(1);
+            res.send(data);
+        }
+    });
+};
+
+const getExchangeResourceList = (req, res) => {
+    console.log(req.body);
+    Exchange.getExchangeResourceList((err, data) => {
         console.log(1);
         if (err) {
             res.status(500).send({
@@ -134,7 +167,9 @@ const deleteExchange = (req, res) => {
 
 module.exports = {
     addExchange,
+    addExchangeResource,
     getExchangesList,
+    getExchangeResourceList,
     getExchangeById,
     getExchangesListByStatus,
     getExchangesListByOfferUserId,

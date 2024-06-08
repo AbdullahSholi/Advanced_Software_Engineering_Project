@@ -65,6 +65,19 @@ Garden.getUserGardenList = ( UserID,result) => {
     });
 };
 
+Garden.getUserGardensList = (result) => {
+
+    db.query('SELECT * FROM user_garden', (err, res) => {
+
+        if (err) {
+            console.log(3);
+            result(err, null);
+            return;
+        }
+        result(null, res);
+    });
+};
+
 Garden.getGardenListById = (GardenID, result) => {
 
     db.query(`SELECT * FROM garden WHERE GardenID = ${GardenID}`, (err, res) => {
