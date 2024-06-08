@@ -132,7 +132,9 @@ router.delete("/GreenThumb/api/v1/exchange/:id", exchangeController.deleteExchan
 
 // Planting Activity
 router.post('/GreenThumb/api/v1/new-activity', activityController.addActivity);
+router.post('/GreenThumb/api/v1/new-plantingactivity-plant', activityController.addActivityPlant);
 router.get("/GreenThumb/api/v1/activities-list", activityController.getActivitiesList);
+router.get("/GreenThumb/api/v1/plantingactivity-plant-list", activityController.getActivitiesPlantList);
 router.get("/GreenThumb/api/v1/activity/:id", activityController.getActivityById);
 router.get("/GreenThumb/api/v1/activities-list-by-user/:id", activityController.getActivitiesListByUserId);
 router.get("/GreenThumb/api/v1/activities-list-by-plot/:id", activityController.getActivitiesListByPlotId);
