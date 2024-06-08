@@ -215,6 +215,7 @@ const mainMenu = (UserID) => {
       choices: [
         'Garden',
         'Guide',
+        'Event',
         'Planting Activity',
         'Exchange'
       ]
@@ -227,8 +228,11 @@ const mainMenu = (UserID) => {
         case 'Guide':
           Guide(UserID);
           break;
+          case 'Event':
+            Event(UserID);
+            break;  
         case 'Planting Activity':
-          Planting_Activity();
+          Planting_Activity(UserID);
           break;
         case 'Exchange':
           Exchange(UserID);
@@ -254,6 +258,8 @@ const Garden = (UserID) => {
         'Display gardens by location',
         'Update garden data',
         'Delete a specific garden',
+        "Enter to event window",
+        "Enter to plot window",
         'Go Back'
       ]
     })
@@ -282,6 +288,12 @@ const Garden = (UserID) => {
         case 'Delete a specific garden':
           DeleteASpecificGarden(UserID);
           break;
+          case 'Enter to event window':
+            Event(UserID);
+            break;
+            case 'Enter to plot window':
+              Plot(UserID);
+              break;    
         case 'Go Back':
           mainMenu(UserID);
           break;
@@ -338,6 +350,60 @@ const Guide = (UserID) => {
           console.log('Invalid choice');
       }
     });
+}
+
+const Event = (UserID) => {
+  axios.get(`http://localhost:3000/GreenThumb/api/v1/user-garden-list/${UserID}`).then(response=>{
+    console.log(response.data[0].GardenID);
+    const GardenID = response.data[0].GardenID;
+    inquirer
+    .prompt({
+      type: 'list',
+      name: 'action',
+      message: 'What would you like to do?',
+      choices: [
+        'Add Event',
+        'Display All Events',
+        'Display Event by id',
+        'Display Events by garden id',
+        'Update event data',
+        'Delete a specific event',
+        'Go Back'
+      ]
+    })
+    .then((answers) => {
+      switch (answers.action) {
+        case 'Add Event':
+          AddEvent(UserID, GardenID);
+          break;
+        case 'Display All Events':
+          DisplayAllEvents(UserID, GardenID);
+          break;
+        case 'Display Event by id':
+          DisplayEventById(UserID, GardenID);
+          break;
+        case 'Display Events by garden id':
+          DisplayEventsByGardenId(UserID, GardenID);
+          break;
+
+        case 'Update event data':
+          UpdateEventData(UserID, GardenID);
+          break;
+
+        case 'Delete a specific event':
+          DeleteASpecificEvent(UserID, GardenID);
+          break;
+        case 'Go Back':
+          mainMenu(UserID);
+          break;
+        default:
+          console.log('Invalid choice');
+      }
+    });
+  }).catch(error=>{
+
+  })
+  
 }
 
 const Planting_Activity = (UserID) => {
@@ -975,6 +1041,264 @@ const DeleteASpecificGuide = (UserID) => {
     console.error('Failed to get guide via id:', error);
     // Optionally, you can return to the main menu even in case of an error
     Guide(UserID);
+  })
+}
+
+/* ***************** */
+
+
+// Event functions
+/* ***************** */
+
+const AddEvent = (UserID, GardenID) => {
+  inquirer
+    .prompt([
+      {
+        type: 'input',
+        name: 'date',
+        message: 'Enter your event date:',
+        default: '2024-02-05',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter your event date.';
+          }
+        }
+      },
+      {
+        type: 'input',
+        name: 'description',
+        message: 'Enter event description:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter your event description.';
+          }
+        }
+      },
+
+    ])
+    .then(answers => {
+      console.log('Enter guide data');
+      axios.get("http://localhost:3000/GreenThumb/api/v1/events-list").then(response1 => {
+        // Define the URL to which you want to send the POST request
+        const url = 'http://localhost:3000/GreenThumb/api/v1/new-event';
+        // Data to be sent in the POST request
+        const postData = {
+          EventID: response1.data.length + 1,
+          GardenID: GardenID,
+          Date: answers.date,
+          Description: answers.description
+        };
+
+        axios.post(url, postData)
+          .then(response2 => {
+            // Handle success
+            console.log({
+              EventID: response1.data.length + 1,
+              GardenID: GardenID,
+              Date: answers.date,
+              Description: answers.description
+            });
+            /////////////////////
+            Event(UserID);
+
+          }).catch(error => {
+            console.error('Error:', error);
+            Event(UserID);
+          })
+
+
+
+      })
+        .catch(error => {
+          // Handle error
+          console.error('Error:', error);
+          Garden(UserID);
+        });
+
+    })
+    .catch((error) => {
+      console.error('Login failed:', error);
+      Garden(UserID);
+    });
+}
+
+const DisplayAllEvents = (UserID, GardenID) => {
+  axios.get("http://localhost:3000/GreenThumb/api/v1/events-list").then(response => {
+    console.log(response.data);
+    Event(UserID);
+  }).catch(error => {
+
+  })
+}
+
+const DisplayEventById = (UserID, GardenID) => {
+  inquirer.prompt(
+    [
+      {
+        type: 'input',
+        name: 'EventID',
+        message: 'Enter your Event Id:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter your Event Id.';
+          }
+        }
+      },
+    ]
+  ).then(answers => {
+    axios.get(`http://localhost:3000/GreenThumb/api/v1/event/${answers.EventID}`).then(response => {
+      console.log(response.data);
+      Event(UserID);
+    }).catch(error => {
+      console.error('Error message:', error);
+    })
+  }).catch((error) => {
+    console.error('Failed to get guide via id:', error);
+    // Optionally, you can return to the main menu even in case of an error
+    Event(UserID);
+  })
+
+}
+
+
+const DisplayEventsByGardenId = (UserID, GardenID) => {
+  inquirer.prompt(
+    [
+      {
+        type: 'input',
+        name: 'GardenID',
+        message: 'Enter your Garden Id:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter your Garden Id.';
+          }
+        }
+      },
+    ]
+  ).then(answers => {
+    axios.get(`http://localhost:3000/GreenThumb/api/v1/events-list-by-garden/${answers.GardenID}`).then(response => {
+      console.log(response.data);
+      Event(UserID);
+    }).catch(error => {
+      console.error('Error message:', error);
+    })
+  }).catch((error) => {
+    console.error('Failed to get guide via id:', error);
+    // Optionally, you can return to the main menu even in case of an error
+    Event(UserID);
+  })
+
+}
+
+const UpdateEventData = (UserID, GardenID) => {
+  inquirer.prompt(
+    [
+      {
+        type: 'input',
+        name: 'EventID',
+        message: 'Enter your Event Id:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter your Event Id.';
+          }
+        }
+      },
+    ]
+  ).then(answers => {
+    console.log("Enter data to update")
+
+    inquirer.prompt([
+      {
+        type: 'input',
+        name: 'date',
+        message: 'Enter even date:',
+        default: "2024-11-12",
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter event date.';
+          }
+        }
+      },
+      {
+        type: 'input',
+        name: 'description',
+        message: 'Enter event description:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter event description.';
+          }
+        }
+      },
+      
+    ]).then(answers1 => {
+      axios.patch(`http://localhost:3000/GreenThumb/api/v1/event/${answers.EventID}`, {
+        GardenID: GardenID,
+        Date: answers1.date,
+        Description: answers1.description
+      }).then(response => {
+        console.log({
+          GardenID: GardenID,
+        Date: answers1.date,
+        Description: answers1.description
+        });
+
+        Event(UserID);
+      }).catch(error => {
+        console.error('Error message:', error);
+      })
+    }).catch(error => {
+
+    })
+
+
+  }).catch((error) => {
+    console.error('Failed to get Event via id:', error);
+    // Optionally, you can return to the main menu even in case of an error
+    Event(UserID);
+  })
+}
+
+const DeleteASpecificEvent = (UserID, GardenID) => {
+  inquirer.prompt(
+    [
+      {
+        type: 'input',
+        name: 'EventID',
+        message: 'Enter your Event Id:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter your Event Id.';
+          }
+        }
+      },
+    ]
+  ).then(answers => {
+    axios.delete(`http://localhost:3000/GreenThumb/api/v1/event/${answers.EventID}`).then(response => {
+      console.log(response.data);
+      Event(UserID);
+    }).catch(error => {
+      console.error('Error message:', error);
+    })
+  }).catch((error) => {
+    console.error('Failed to get Event via id:', error);
+    // Optionally, you can return to the main menu even in case of an error
+    Event(UserID);
   })
 }
 
