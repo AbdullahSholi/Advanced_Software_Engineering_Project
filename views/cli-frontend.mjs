@@ -38,7 +38,7 @@ const home = () => {
 const registerPage = () => {
   console.log('Welcome to the registration page!');
   inquirer
-    .prompt({
+    .prompt([{
       type: 'input',
       name: 'username',
       message: 'Enter your username:',
@@ -50,60 +50,60 @@ const registerPage = () => {
         return 'Please enter a valid username (alphanumeric characters only).';
       }
     },
-      {
-        type: 'input',
-        name: 'email',
-        message: 'Enter your email address:',
-        validate: function (value) {
-          // Regular expression for email validation
-          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    {
+      type: 'input',
+      name: 'email',
+      message: 'Enter your email address:',
+      validate: function (value) {
+        // Regular expression for email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-          // Test the value against the regex
-          if (emailRegex.test(value)) {
-            return true;
-          }
-          return 'Please enter a valid email address.';
+        // Test the value against the regex
+        if (emailRegex.test(value)) {
+          return true;
         }
+        return 'Please enter a valid email address.';
+      }
 
-      },
-      {
-        type: 'password',
-        name: 'password',
-        message: 'Enter your password:',
-        mask: '*',
-        validate: function (value) {
-          if (value.length < 8) {
-            return 'Password must be at least 8 characters long.';
-          }
-          return true;
+    },
+    {
+      type: 'password',
+      name: 'password',
+      message: 'Enter your password:',
+      mask: '*',
+      validate: function (value) {
+        if (value.length < 8) {
+          return 'Password must be at least 8 characters long.';
         }
-      },
-      {
-        type: 'password',
-        name: 'confirmPassword',
-        message: 'Confirm your password:',
-        mask: '*',
-        validate: function (value, answers) {
-          if (value !== answers.password) {
-            return 'Passwords do not match.';
-          }
-          return true;
+        return true;
+      }
+    },
+    {
+      type: 'password',
+      name: 'confirmPassword',
+      message: 'Confirm your password:',
+      mask: '*',
+      validate: function (value, answers) {
+        if (value !== answers.password) {
+          return 'Passwords do not match.';
         }
-      },
-      {
-        type: 'role',
-        name: 'role',
-        message: 'Enter your role:',
-        validate: function (value, answers) {
-          if (value == "") {
-            return 'Field is empty!';
-          }
-          return true;
+        return true;
+      }
+    },
+    {
+      type: 'role',
+      name: 'role',
+      message: 'Enter your role:',
+      validate: function (value, answers) {
+        if (value == "") {
+          return 'Field is empty!';
         }
-      })
+        return true;
+      }
+    }])
     .then(answers => {
       console.log('Registration successful!');
-      console.log('Username:', answers.username);
+      console.log('Collected data', answers);
 
       axios.get("http://localhost:3000/GreenThumb/api/v1/users-list").then(response => {
         console.log('Response:', response.data);
@@ -121,7 +121,7 @@ const registerPage = () => {
         axios.post(url, postData)
           .then(response => {
             // Handle success
-            // console.log('Response:', response.data);
+            console.log('Response:', response.data);
             mainMenu(response.data.length + 1);
           })
           .catch(error => {
@@ -215,7 +215,8 @@ const mainMenu = (UserID) => {
       choices: [
         'Garden',
         'Guide',
-        'Exchange'
+        'Exchange',
+        'Logout'
       ]
     })
     .then((answers) => {
@@ -228,6 +229,9 @@ const mainMenu = (UserID) => {
           break;
         case 'Exchange':
           Exchange(UserID);
+          break;
+        case 'Logout':
+          home();
           break;
 
         default:
@@ -280,12 +284,12 @@ const Garden = (UserID) => {
         case 'Delete a specific garden':
           DeleteASpecificGarden(UserID);
           break;
-          case 'Enter to event window':
-            Event(UserID);
-            break;
-            case 'Enter to plot window':
-              Plot(UserID);
-              break;    
+        case 'Enter to event window':
+          Event(UserID);
+          break;
+        case 'Enter to plot window':
+          Plot(UserID);
+          break;
         case 'Go Back':
           mainMenu(UserID);
           break;
@@ -297,7 +301,7 @@ const Garden = (UserID) => {
 
 
 const Guide = (UserID) => {
-  
+
   inquirer
     .prompt({
       type: 'list',
@@ -345,139 +349,139 @@ const Guide = (UserID) => {
 }
 
 const Event = (UserID) => {
-  axios.get(`http://localhost:3000/GreenThumb/api/v1/user-garden-list/${UserID}`).then(response=>{
+  axios.get(`http://localhost:3000/GreenThumb/api/v1/user-garden-list/${UserID}`).then(response => {
     console.log(response.data[0].GardenID);
     const GardenID = response.data[0].GardenID;
     inquirer
-    .prompt({
-      type: 'list',
-      name: 'action',
-      message: 'What would you like to do?',
-      choices: [
-        'Add Event',
-        'Display All Events',
-        'Display Event by id',
-        'Display Events by garden id',
-        'Update event data',
-        'Delete a specific event',
-        'Go Back'
-      ]
-    })
-    .then((answers) => {
-      switch (answers.action) {
-        case 'Add Event':
-          AddEvent(UserID, GardenID);
-          break;
-        case 'Display All Events':
-          DisplayAllEvents(UserID, GardenID);
-          break;
-        case 'Display Event by id':
-          DisplayEventById(UserID, GardenID);
-          break;
-        case 'Display Events by garden id':
-          DisplayEventsByGardenId(UserID, GardenID);
-          break;
+      .prompt({
+        type: 'list',
+        name: 'action',
+        message: 'What would you like to do?',
+        choices: [
+          'Add Event',
+          'Display All Events',
+          'Display Event by id',
+          'Display Events by garden id',
+          'Update event data',
+          'Delete a specific event',
+          'Go Back'
+        ]
+      })
+      .then((answers) => {
+        switch (answers.action) {
+          case 'Add Event':
+            AddEvent(UserID, GardenID);
+            break;
+          case 'Display All Events':
+            DisplayAllEvents(UserID, GardenID);
+            break;
+          case 'Display Event by id':
+            DisplayEventById(UserID, GardenID);
+            break;
+          case 'Display Events by garden id':
+            DisplayEventsByGardenId(UserID, GardenID);
+            break;
 
-        case 'Update event data':
-          UpdateEventData(UserID, GardenID);
-          break;
+          case 'Update event data':
+            UpdateEventData(UserID, GardenID);
+            break;
 
-        case 'Delete a specific event':
-          DeleteASpecificEvent(UserID, GardenID);
-          break;
-        case 'Go Back':
-          mainMenu(UserID);
-          break;
-        default:
-          console.log('Invalid choice');
-      }
-    });
-  }).catch(error=>{
+          case 'Delete a specific event':
+            DeleteASpecificEvent(UserID, GardenID);
+            break;
+          case 'Go Back':
+            mainMenu(UserID);
+            break;
+          default:
+            console.log('Invalid choice');
+        }
+      });
+  }).catch(error => {
 
   })
-  
+
 }
 
 
 const Plot = (UserID) => {
-  axios.get(`http://localhost:3000/GreenThumb/api/v1/user-garden-list/${UserID}`).then(response=>{
+  axios.get(`http://localhost:3000/GreenThumb/api/v1/user-garden-list/${UserID}`).then(response => {
     console.log(response.data[0].GardenID);
     const GardenID = response.data[0].GardenID;
     inquirer
-    .prompt({
-      type: 'list',
-      name: 'action',
-      message: 'What would you like to do?',
-      choices: [
-        'Add Plot',
-        'Display All Plots',
-        'Display Plot by id',
-        'Display Plots by garden id',
-        'Update plot data',
-        'Delete a specific plot',
-        'Enter to activity window',
-        'Go Back'
-      ]
-    })
-    .then((answers) => {
-      switch (answers.action) {
-        case 'Add Plot':
-          AddPlot(UserID, GardenID);
-          break;
-        case 'Display All Plots':
-          DisplayAllPlots(UserID, GardenID);
-          break;
-        case 'Display Plot by id':
-          DisplayPlotById(UserID, GardenID);
-          break;
-        case 'Display Plots by garden id':
-          DisplayPlotsByGardenId(UserID, GardenID);
-          break;
+      .prompt({
+        type: 'list',
+        name: 'action',
+        message: 'What would you like to do?',
+        choices: [
+          'Add Plot',
+          'Display All Plots',
+          'Display Plot by id',
+          'Display Plots by garden id',
+          'Update plot data',
+          'Delete a specific plot',
+          'Enter to activity window',
+          'Go Back'
+        ]
+      })
+      .then((answers) => {
+        switch (answers.action) {
+          case 'Add Plot':
+            AddPlot(UserID, GardenID);
+            break;
+          case 'Display All Plots':
+            DisplayAllPlots(UserID, GardenID);
+            break;
+          case 'Display Plot by id':
+            DisplayPlotById(UserID, GardenID);
+            break;
+          case 'Display Plots by garden id':
+            DisplayPlotsByGardenId(UserID, GardenID);
+            break;
 
-        case 'Update plot data':
-          UpdatePlotData(UserID, GardenID);
-          break;
+          case 'Update plot data':
+            UpdatePlotData(UserID, GardenID);
+            break;
 
-        case 'Delete a specific plot':
-          DeleteASpecificPlot(UserID, GardenID);
-          break;
+          case 'Delete a specific plot':
+            DeleteASpecificPlot(UserID, GardenID);
+            break;
           case 'Enter to activity window':
             SelectPlot(UserID);
-            break;  
-        case 'Go Back':
-          mainMenu(UserID);
-          break;
-        default:
-          console.log('Invalid choice');
-      }
-    });
-  }).catch(error=>{
+            break;
+          case 'Go Back':
+            mainMenu(UserID);
+            break;
+          default:
+            console.log('Invalid choice');
+        }
+      });
+  }).catch(error => {
 
   })
-  
+
 }
 
 
 const SelectPlot = (UserID) => {
   axios.get(`http://localhost:3000/GreenThumb/api/v1/plots-list`).then(response => {
-    
+
     inquirer
-    .prompt({
-      type: 'list',
-      name: 'plotID',
-      message: 'Select a plot for the activity:',
-      choices: response.data.map(plot => plot.PlotID.toString()) // Ensure PlotID is a string for comparison
-    })
-    .then((answers) => {
-      const selectedPlot = response.data.find(plot => plot.PlotID.toString() === answers.plotID); // Correct comparison
-      
-      if (selectedPlot) {
-        console.log(selectedPlot);
-        Planting_Activity(UserID, selectedPlot.PlotID);
-      } else {
-        console.error('Selected plot not found.');
-      }
-    });
+      .prompt({
+        type: 'list',
+        name: 'plotID',
+        message: 'Select a plot for the activity:',
+        choices: response.data.map(plot => plot.PlotID.toString()) // Ensure PlotID is a string for comparison
+      })
+      .then((answers) => {
+        const selectedPlot = response.data.find(plot => plot.PlotID.toString() === answers.plotID); // Correct comparison
+
+        if (selectedPlot) {
+          console.log(selectedPlot);
+          Planting_Activity(UserID, selectedPlot.PlotID);
+        } else {
+          console.error('Selected plot not found.');
+        }
+      });
   }).catch(error => {
     console.error('Error fetching plots:', error);
   });
@@ -485,8 +489,8 @@ const SelectPlot = (UserID) => {
 
 
 const Planting_Activity = (UserID, PlotID) => {
-    // axios.get(`http://localhost:3000/GreenThumb/api/v1/user-garden-list/${UserID}`).then(response=>{}).catch(error=>{});
-    inquirer
+  // axios.get(`http://localhost:3000/GreenThumb/api/v1/user-garden-list/${UserID}`).then(response=>{}).catch(error=>{});
+  inquirer
     .prompt({
       type: 'list',
       name: 'action',
@@ -517,15 +521,15 @@ const Planting_Activity = (UserID, PlotID) => {
         case 'Display Activities by user id':
           DisplayActivitiesByUserId(UserID, PlotID);
           break;
-          case 'Display Activities by plot id':
-            DisplayActivitiesByPlotId(UserID, PlotID);
-            break;
+        case 'Display Activities by plot id':
+          DisplayActivitiesByPlotId(UserID, PlotID);
+          break;
         case 'Update activity data':
           UpdateActivityData(UserID, PlotID);
           break;
 
-          case 'Enter to Plant window':
-            EnterToPlantWindow(UserID, PlotID);
+        case 'Enter to Plant window':
+          EnterToPlantWindow(UserID, PlotID);
           break;
         case 'Delete a specific activity':
           DeleteASpecificActivity(UserID, PlotID);
@@ -577,18 +581,18 @@ const Exchange = (UserID) => {
         case 'Display Exchanges by Requestor User Id':
           DisplayExchangesByRequestorUserId(UserID);
           break;
-          case 'Display Exchanges by status':
-            DisplayExchangesByStatus(UserID);
-            break;
+        case 'Display Exchanges by status':
+          DisplayExchangesByStatus(UserID);
+          break;
         case 'Update Exchange data':
           UpdateExchangeData(UserID);
           break;
         case 'Delete a specific Exchange':
           DeleteASpecificExchange(UserID);
           break;
-          case 'Enter to resources window':
-            Resources(UserID);
-            break; 
+        case 'Enter to resources window':
+          Resources(UserID);
+          break;
         case 'Go Back':
           mainMenu(UserID);
           break;
@@ -637,9 +641,9 @@ const Resources = (UserID) => {
         case 'Delete a specific Resource':
           DeleteASpecificResource(UserID);
           break;
-            case 'Enter to Partnership window':
-              Partnership(UserID);
-              break;    
+        case 'Enter to Partnership window':
+          Partnership(UserID);
+          break;
         case 'Go Back':
           Exchange(UserID);
           break;
@@ -649,7 +653,7 @@ const Resources = (UserID) => {
     });
 }
 
-const Partnership = (UserID)=>{
+const Partnership = (UserID) => {
   inquirer
     .prompt({
       type: 'list',
@@ -1265,7 +1269,7 @@ const UpdateGuideData = (UserID) => {
           }
         }
       },
-      
+
     ]).then(answers1 => {
       axios.patch(`http://localhost:3000/GreenThumb/api/v1/guide/${answers.GuideID}`, {
         Title: answers1.title,
@@ -1524,7 +1528,7 @@ const UpdateEventData = (UserID, GardenID) => {
           }
         }
       },
-      
+
     ]).then(answers1 => {
       axios.patch(`http://localhost:3000/GreenThumb/api/v1/event/${answers.EventID}`, {
         GardenID: GardenID,
@@ -1533,8 +1537,8 @@ const UpdateEventData = (UserID, GardenID) => {
       }).then(response => {
         console.log({
           GardenID: GardenID,
-        Date: answers1.date,
-        Description: answers1.description
+          Date: answers1.date,
+          Description: answers1.description
         });
 
         Event(UserID);
@@ -1597,7 +1601,7 @@ const AddPlantingActivity = (UserID, PlotID) => {
         type: 'input',
         name: 'PlantDate',
         message: 'Enter Plant Date value:',
-        default: "2024-06-24", 
+        default: "2024-06-24",
         validate: function (value) {
           if (value.length) {
             return true;
@@ -1641,10 +1645,10 @@ const AddPlantingActivity = (UserID, PlotID) => {
             // Handle success
             console.log({
               ActivityID: response1.data.length + 1,
-          UserID: UserID,
-          PlotID: PlotID,
-          PlantDate: answers.PlantDate,
-          HarvestDate: answers.HarvestDate
+              UserID: UserID,
+              PlotID: PlotID,
+              PlantDate: answers.PlantDate,
+              HarvestDate: answers.HarvestDate
             });
             /////////////////////
             Planting_Activity(UserID, PlotID);
@@ -1820,7 +1824,7 @@ const UpdateActivityData = (UserID, PlotID) => {
           }
         }
       },
-      
+
     ]).then(answers1 => {
       axios.patch(`http://localhost:3000/GreenThumb/api/v1/activity/${answers.ActivityID}`, {
         PlantDate: answers1.PlantDate,
@@ -1831,7 +1835,7 @@ const UpdateActivityData = (UserID, PlotID) => {
           HarvestDate: answers1.HarvestDate
         });
 
-        Planting_Activity(UserID ,PlotID);
+        Planting_Activity(UserID, PlotID);
       }).catch(error => {
         console.error('Error message:', error);
       })
@@ -1843,7 +1847,7 @@ const UpdateActivityData = (UserID, PlotID) => {
   }).catch((error) => {
     console.error('Failed to get activity via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    Planting_Activity(UserID ,PlotID);
+    Planting_Activity(UserID, PlotID);
 
   })
 }
@@ -2007,11 +2011,11 @@ const AddPlot = (UserID, GardenID) => {
             // Handle success
             console.log({
               PlotID: response1.data.length + 1,
-          GardenID: GardenID,
-          PlotSize: answers.PlotSize,
-          SunLight: answers.SunLight,
-          SoilType: answers.SoilType,
-          Available: answers.Available
+              GardenID: GardenID,
+              PlotSize: answers.PlotSize,
+              SunLight: answers.SunLight,
+              SoilType: answers.SoilType,
+              Available: answers.Available
             });
             /////////////////////
             Plot(UserID);
@@ -2178,14 +2182,14 @@ const UpdatePlotData = (UserID, GardenID) => {
           }
         }
       },
-      
+
     ]).then(answers1 => {
       axios.patch(`http://localhost:3000/GreenThumb/api/v1/plot/${answers.PlotID}`, {
         GardenID: GardenID,
-          PlotSize: answers1.PlotSize,
-          SunLight: answers1.SunLight,
-          SoilType: answers1.SoilType,
-          Available: answers1.Available
+        PlotSize: answers1.PlotSize,
+        SunLight: answers1.SunLight,
+        SoilType: answers1.SoilType,
+        Available: answers1.Available
       }).then(response => {
         console.log({
           GardenID: GardenID,
@@ -2254,7 +2258,7 @@ const AddExchange = (UserID) => {
         type: 'input',
         name: 'RequestorUserID',
         message: 'Enter requestor user id:',
-        
+
         validate: function (value) {
           if (value.length) {
             return true;
@@ -2267,7 +2271,7 @@ const AddExchange = (UserID) => {
         type: 'input',
         name: 'Status',
         message: 'Enter exchange status:',
-        default:"Offered, Requested or Completed",
+        default: "Offered, Requested or Completed",
         validate: function (value) {
           if (value.length) {
             return true;
@@ -2298,7 +2302,7 @@ const AddExchange = (UserID) => {
             console.log(postData);
             Exchange(UserID);
 
-            
+
             /////////////////////
 
           }).catch(error => {
@@ -2427,7 +2431,7 @@ const DisplayExchangesByRequestorUserId = (UserID) => {
   })
 }
 
-const DisplayExchangesByStatus= (UserID) => {
+const DisplayExchangesByStatus = (UserID) => {
   inquirer.prompt(
     [
       {
@@ -2561,7 +2565,7 @@ const DeleteASpecificExchange = (UserID) => {
 // Resource functions
 /* ***************** */
 
-const SelectExchange = async (UserID)=>{
+const SelectExchange = async (UserID) => {
   try {
     const response = await axios.get('http://localhost:3000/GreenThumb/api/v1/exchanges-list');
     console.log(response.data);
@@ -2570,7 +2574,7 @@ const SelectExchange = async (UserID)=>{
       type: 'list',
       name: 'ExchangeID',
       message: 'Select specific exchange :',
-      choices: response.data.map(exchange => exchange.ExchangeID.toString()) 
+      choices: response.data.map(exchange => exchange.ExchangeID.toString())
     });
 
     const selectedExchange = response.data.find(exchange => exchange.ExchangeID.toString() === answers.ExchangeID);
@@ -2587,7 +2591,7 @@ const SelectExchange = async (UserID)=>{
 }
 
 const AddResource = (UserID, ExchangeID) => {
-  
+
   inquirer
     .prompt([
       {
@@ -2887,7 +2891,7 @@ const DeleteASpecificResource = (UserID) => {
 // Resource functions
 /* ***************** */
 
-const SelectResource = async (UserID)=>{
+const SelectResource = async (UserID) => {
   try {
     const response = await axios.get('http://localhost:3000/GreenThumb/api/v1/resources-list');
     console.log(response.data);
@@ -2896,7 +2900,7 @@ const SelectResource = async (UserID)=>{
       type: 'list',
       name: 'ResourceID',
       message: 'Select specific resource :',
-      choices: response.data.map(resource => resource.ResourceID.toString()) 
+      choices: response.data.map(resource => resource.ResourceID.toString())
     });
 
     const selectedResource = response.data.find(resource => resource.ResourceID.toString() === answers.ResourceID);
@@ -2913,7 +2917,7 @@ const SelectResource = async (UserID)=>{
 }
 
 const addPartnership = (UserID, ResourceID) => {
-  
+
   inquirer
     .prompt([
       {
@@ -3215,7 +3219,7 @@ const DeleteASpecificPartnership = (UserID) => {
 // Resource functions
 /* ***************** */
 
-const SelectActivity = async (UserID)=>{
+const SelectActivity = async (UserID) => {
   try {
     const response = await axios.get('http://localhost:3000/GreenThumb/api/v1/activities-list');
     console.log(response.data);
@@ -3224,7 +3228,7 @@ const SelectActivity = async (UserID)=>{
       type: 'list',
       name: 'ActivityID',
       message: 'Select specific activity :',
-      choices: response.data.map(activity => activity.ActivityID.toString()) 
+      choices: response.data.map(activity => activity.ActivityID.toString())
     });
 
     const selectedActivity = response.data.find(activity => activity.ActivityID.toString() === answers.ActivityID);
@@ -3241,7 +3245,7 @@ const SelectActivity = async (UserID)=>{
 }
 
 const addPlant = (UserID, ActivityID) => {
-  
+
   inquirer
     .prompt([
       {
@@ -3483,8 +3487,8 @@ const UpdatePlantData = (UserID) => {
         console.log({
           PlantID: answers.PlantID,
           Name: answers1.name,
-        Description: answers1.description,
-        GrowingSeason: answers1.growingseason
+          Description: answers1.description,
+          GrowingSeason: answers1.growingseason
         });
 
         EnterToPlantWindow(UserID);
