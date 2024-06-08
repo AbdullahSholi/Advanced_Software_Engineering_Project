@@ -498,6 +498,7 @@ const Planting_Activity = (UserID, PlotID) => {
         'Display Activities by user id',
         'Display Activities by plot id',
         'Update activity data',
+        'Enter to Plant window',
         'Delete a specific activity',
         'Go Back'
       ]
@@ -523,6 +524,9 @@ const Planting_Activity = (UserID, PlotID) => {
           UpdateActivityData(UserID, PlotID);
           break;
 
+          case 'Enter to Plant window':
+            EnterToPlantWindow(UserID, PlotID);
+          break;
         case 'Delete a specific activity':
           DeleteASpecificActivity(UserID, PlotID);
           break;
@@ -1844,6 +1848,52 @@ const UpdateActivityData = (UserID, PlotID) => {
   })
 }
 
+const EnterToPlantWindow = (UserID, PlotID) => {
+  inquirer
+    .prompt({
+      type: 'list',
+      name: 'action',
+      message: 'What would you like to do?',
+      choices: [
+        'Add Plant',
+        'Display All Plants',
+        'Display Plant by id',
+        'Display Plants by name',
+        'Update Plant data',
+        'Delete a specific Plant',
+        'Go Back'
+      ]
+    })
+    .then((answers) => {
+      switch (answers.action) {
+        case 'Add Plant':
+          SelectActivity(UserID);
+          break;
+        case 'Display All Plants':
+          DisplayAllPlants(UserID);
+          break;
+        case 'Display Plant by id':
+          DisplayPlantById(UserID);
+          break;
+        case 'Display Plants by name':
+          DisplayPlantsByName(UserID);
+          break;
+
+        case 'Update Plant data':
+          UpdatePlantData(UserID);
+          break;
+        case 'Delete a specific Plant':
+          DeleteASpecificPlant(UserID);
+          break;
+        case 'Go Back':
+          Planting_Activity(UserID, PlotID);
+          break;
+        default:
+          console.log('Invalid choice');
+      }
+    });
+}
+
 
 const DeleteASpecificActivity = (UserID, PlotID) => {
   inquirer.prompt(
@@ -3153,6 +3203,334 @@ const DeleteASpecificPartnership = (UserID) => {
     console.error('Failed to get Partnership via id:', error);
     // Optionally, you can return to the main menu even in case of an error
     Partnership(UserID);
+
+  })
+}
+
+/* ***************** */
+
+
+
+
+// Resource functions
+/* ***************** */
+
+const SelectActivity = async (UserID)=>{
+  try {
+    const response = await axios.get('http://localhost:3000/GreenThumb/api/v1/activities-list');
+    console.log(response.data);
+
+    const answers = await inquirer.prompt({
+      type: 'list',
+      name: 'ActivityID',
+      message: 'Select specific activity :',
+      choices: response.data.map(activity => activity.ActivityID.toString()) 
+    });
+
+    const selectedActivity = response.data.find(activity => activity.ActivityID.toString() === answers.ActivityID);
+
+    if (selectedActivity) {
+      console.log(selectedActivity);
+      addPlant(UserID, selectedActivity.ActivityID);
+    } else {
+      console.error('Selected Activity not found.');
+    }
+  } catch (error) {
+    console.error('Error fetching activities:', error);
+  }
+}
+
+const addPlant = (UserID, ActivityID) => {
+  
+  inquirer
+    .prompt([
+      {
+        type: 'input',
+        name: 'Name',
+        message: 'Enter plant name:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter plant name.';
+          }
+        }
+      },
+      {
+        type: 'input',
+        name: 'GrowingSeason',
+        message: 'Enter Growing Season:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter Growing Season.';
+          }
+        }
+      },
+      {
+        type: 'input',
+        name: 'Description',
+        message: 'Enter Plant Description:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter Plant Description.';
+          }
+        }
+      },
+    ])
+    .then(answers => {
+      console.log('Enter Plant data');
+      console.log(answers)
+      axios.get("http://localhost:3000/GreenThumb/api/v1/plants-list").then(response1 => {
+        // Define the URL to which you want to send the POST request
+        const url = 'http://localhost:3000/GreenThumb/api/v1/new-plant';
+        console.log(response1.data.length + 1);
+        // Data to be sent in the POST request
+        const postData = {
+          PlantID: response1.data.length + 1,
+          GrowingSeason: answers.GrowingSeason,
+          Name: answers.Name,
+          Description: answers.Description
+        };
+
+        axios.post(url, postData)
+          .then(response2 => {
+            // Handle success
+            console.log('Response2');
+
+            axios.get("http://localhost:3000/GreenThumb/api/v1/plantingactivity-plant-list").then(response3 => { // arrive here ( also edit garden )
+              axios.post('http://localhost:3000/GreenThumb/api/v1/new-plantingactivity-plant', {
+                PlantingActivity_Plant_ID: response3.data.length + 1,
+                PlantID: response1.data.length + 1,
+                ActivityID: ActivityID
+              })
+                .then(response4 => {
+                  // Handle success
+                  console.log('Response4');
+                  EnterToPlantWindow(UserID);
+                  // mainMenu(response.data.user.UserID);
+
+
+                })
+                .catch(error => {
+                  // Handle error
+                  console.error('Error:', error);
+                });
+            }).catch(error => {
+              console.error('Error:', error);
+            })
+
+
+            /////////////////////
+
+          }).catch(error => {
+            console.error('Error:', error);
+          })
+
+
+
+      })
+        .catch(error => {
+          // Handle error
+          console.error('Error:', error);
+        });
+
+    })
+    .catch((error) => {
+      console.error('Login failed:', error);
+    });
+  // Garden(UserID);
+}
+
+const DisplayAllPlants = (UserID) => {
+  axios.get("http://localhost:3000/GreenThumb/api/v1/plants-list").then(response => {
+    console.log(response.data);
+    EnterToPlantWindow(UserID);
+  }).catch(error => {
+
+  })
+}
+
+const DisplayPlantById = (UserID) => {
+  inquirer.prompt(
+    [
+      {
+        type: 'input',
+        name: 'PlantID',
+        message: 'Enter your Plant Id:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter your Plant Id.';
+          }
+        }
+      },
+    ]
+  ).then(answers => {
+    axios.get(`http://localhost:3000/GreenThumb/api/v1/plant/${answers.PlantID}`).then(response => {
+      console.log(response.data);
+      EnterToPlantWindow(UserID);
+    }).catch(error => {
+      console.error('Error message:', error);
+    })
+  }).catch((error) => {
+    console.error('Failed to get plant via id:', error);
+    // Optionally, you can return to the main menu even in case of an error
+    EnterToPlantWindow(UserID);
+
+  })
+
+}
+
+const DisplayPlantsByName = (UserID) => {
+  inquirer.prompt(
+    [
+      {
+        type: 'input',
+        name: 'name',
+        message: 'Enter plant name:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter plant name.';
+          }
+        }
+      },
+    ]
+  ).then(answers => {
+    axios.get(`http://localhost:3000/GreenThumb/api/v1/plants-list-by-name/${answers.name}`).then(response => {
+      console.log(response.data);
+      EnterToPlantWindow(UserID);
+    }).catch(error => {
+      console.error('Error message:', error);
+    })
+  }).catch((error) => {
+    console.error('Failed to get plant via id:', error);
+    // Optionally, you can return to the main menu even in case of an error
+    EnterToPlantWindow(UserID);
+
+  })
+}
+
+
+const UpdatePlantData = (UserID) => {
+  inquirer.prompt(
+    [
+      {
+        type: 'input',
+        name: 'PlantID',
+        message: 'Enter Plant id:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter Plant id.';
+          }
+        }
+      },
+    ]
+  ).then(answers => {
+    console.log("Enter data to update")
+
+    inquirer.prompt([
+      {
+        type: 'input',
+        name: 'name',
+        message: 'Enter Plant name:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter Plant name.';
+          }
+        }
+      },
+      {
+        type: 'input',
+        name: 'growingseason',
+        message: 'Enter Growing Season:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter Growing Season.';
+          }
+        }
+      },
+      {
+        type: 'input',
+        name: 'description',
+        message: 'Enter Plant description :',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter Plant description.';
+          }
+        }
+      },
+    ]).then(answers1 => {
+      axios.patch(`http://localhost:3000/GreenThumb/api/v1/plant/${answers.PlantID}`, {
+        Name: answers1.name,
+        Description: answers1.description,
+        GrowingSeason: answers1.growingseason
+      }).then(response => {
+        console.log({
+          PlantID: answers.PlantID,
+          Name: answers1.name,
+        Description: answers1.description,
+        GrowingSeason: answers1.growingseason
+        });
+
+        EnterToPlantWindow(UserID);
+      }).catch(error => {
+        console.error('Error message:', error);
+      })
+    }).catch(error => {
+
+    })
+
+
+  }).catch((error) => {
+    console.error('Failed to get plant via id:', error);
+    // Optionally, you can return to the main menu even in case of an error
+    EnterToPlantWindow(UserID);
+
+  })
+}
+
+const DeleteASpecificPlant = (UserID) => {
+  inquirer.prompt(
+    [
+      {
+        type: 'input',
+        name: 'PlantID',
+        message: 'Enter your Plant Id:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter Plant Id.';
+          }
+        }
+      },
+    ]
+  ).then(answers => {
+    axios.delete(`http://localhost:3000/GreenThumb/api/v1/plant/${answers.PlantID}`).then(response => {
+      console.log(response.data);
+      EnterToPlantWindow(UserID);
+    }).catch(error => {
+      console.error('Error message:', error);
+    })
+  }).catch((error) => {
+    console.error('Failed to get Plant via id:', error);
+    // Optionally, you can return to the main menu even in case of an error
+    EnterToPlantWindow(UserID);
 
   })
 }

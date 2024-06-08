@@ -14,9 +14,31 @@ Activity.addActivity = (newActivity, result) => {
     });
 };
 
+Activity.addActivityPlant = (newActivity, result) => {
+    db.query('INSERT INTO plantingactivity_plant SET ?', newActivity, (err, res) => {
+        if (err) {
+            console.log(err);
+            result(err, null);
+            return;
+        }
+        result(null, { ...newActivity });
+    });
+};
+
 // Get the list of all activities
 Activity.getActivitiesList = (result) => {
     db.query('SELECT * FROM `planning activity`', (err, res) => {
+        if (err) {
+            console.log(err);
+            result(err, null);
+            return;
+        }
+        result(null, res);
+    });
+};
+
+Activity.getActivitiesPlantList = (result) => {
+    db.query('SELECT * FROM plantingactivity_plant', (err, res) => {
         if (err) {
             console.log(err);
             result(err, null);

@@ -17,10 +17,43 @@ const addActivity= (req, res) => {
     });
   };
 
+  const addActivityPlant= (req, res) => {
+    const newActivity = req.body;
+    console.log(req.body);
+    Activity.addActivityPlant(newActivity, (err, data) => {
+        console.log(1);
+      if (err) {
+        res.status(500).send({
+          message:
+            err.message || 'Some error occurred while creating the task.'
+        });
+      } else {
+        console.log(1);
+        res.send(data);
+      }
+    });
+  };
+
 
   const getActivitiesList = (req, res) => {
     console.log(req.body);
     Activity.getActivitiesList( (err, data) => {
+        console.log(1);
+      if (err) {
+        res.status(500).send({
+          message:
+            err.message || 'Some error occurred while creating the task.'
+        });
+      } else {
+        console.log(1);
+        res.send(data);
+      }
+    });
+  };
+
+  const getActivitiesPlantList = (req, res) => {
+    console.log(req.body);
+    Activity.getActivitiesPlantList( (err, data) => {
         console.log(1);
       if (err) {
         res.status(500).send({
@@ -119,7 +152,9 @@ const addActivity= (req, res) => {
 
 module.exports = {
     addActivity,
+    addActivityPlant,
     getActivitiesList,
+    getActivitiesPlantList,
     getActivityById,
     getActivitiesListByUserId,
     getActivitiesListByPlotId,
