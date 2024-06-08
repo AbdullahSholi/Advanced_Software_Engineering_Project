@@ -31,6 +31,7 @@ const { getPublicData, getUserData, getAdminData } = require('../Advanced_Softwa
 router.post('/GreenThumb/api/v1/new-garden', gardenController.addGarden);
 router.post('/GreenThumb/api/v1/new-user-garden', gardenController.addUserGarden);
 router.get('/GreenThumb/api/v1/user-garden-list/:id', gardenController.getUserGardenList);
+router.get('/GreenThumb/api/v1/user-gardens-list', gardenController.getUserGardensList);
 router.get("/GreenThumb/api/v1/gardens-list", gardenController.getGardenList);
 router.get("/GreenThumb/api/v1/garden-list/:id", gardenController.getGardenListById);
 router.get("/GreenThumb/api/v1/garden-list-by-name/:name", gardenController.getGardenListByName);
@@ -106,7 +107,9 @@ router.delete("/GreenThumb/api/v1/partnership/:id", partnershipController.delete
 
 // Resource 
 router.post('/GreenThumb/api/v1/new-resource', resourceController.addResource);
+router.post('/GreenThumb/api/v1/new-resource-partnership', resourceController.addResourcePartnership);
 router.get("/GreenThumb/api/v1/resources-list", resourceController.getResourcesList);
+router.get("/GreenThumb/api/v1/resource-partnership-list", resourceController.getResourcePartnershipList);
 router.get("/GreenThumb/api/v1/resource/:id", resourceController.getResourceById);
 router.get("/GreenThumb/api/v1/resources-list-by-type/:type", resourceController.getResourcesListByType);
 router.patch("/GreenThumb/api/v1/resource/:id", resourceController.updateResource)
@@ -115,10 +118,13 @@ router.delete("/GreenThumb/api/v1/resource/:id", resourceController.deleteResour
 
 // Exchange
 router.post('/GreenThumb/api/v1/new-exchange', exchangeController.addExchange);
+router.post('/GreenThumb/api/v1/new-exchange-resource', exchangeController.addExchangeResource);
 router.get("/GreenThumb/api/v1/exchanges-list", exchangeController.getExchangesList);
+router.get("/GreenThumb/api/v1/exchange-resource-list", exchangeController.getExchangeResourceList);
 router.get("/GreenThumb/api/v1/exchange/:id", exchangeController.getExchangeById);
 router.get("/GreenThumb/api/v1/exchanges-list-by-offer-user/:id", exchangeController.getExchangesListByOfferUserId);
 router.get("/GreenThumb/api/v1/exchanges-list-by-requestor-user/:id", exchangeController.getExchangesListByRequestorUserId);
+router.get("/GreenThumb/api/v1/exchanges-list-by-status/:status", exchangeController.getExchangesListByStatus);
 router.patch("/GreenThumb/api/v1/exchange/:id", exchangeController.updateExchange)
 router.delete("/GreenThumb/api/v1/exchange/:id", exchangeController.deleteExchange)
 

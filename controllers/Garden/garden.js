@@ -66,6 +66,22 @@ const getGardenList = (req, res) => {
   });
 };
 
+const getUserGardensList = (req, res) => {
+  console.log(req.body);
+  Garden.getUserGardensList( (err, data) => {
+      console.log(1);
+    if (err) {
+      res.status(500).send({
+        message:
+          err.message || 'Some error occurred while creating the task.'
+      });
+    } else {
+      console.log(1);
+      res.send(data);
+    }
+  });
+};
+
 
 const getGardenListById = (req, res) => {
 console.log(req.params.id);
@@ -154,6 +170,7 @@ module.exports = {
     addUserGarden,
     getGardenList,
     getUserGardenList,
+    getUserGardensList,
     getGardenListById,
     getGardenListByName,
     getGardenListByLocation,
