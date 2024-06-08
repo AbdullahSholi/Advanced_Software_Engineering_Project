@@ -115,6 +115,37 @@ const deleteSpecificGuideFromList = (req, res) => {
     });
   };
 
+  const commentsList = (req, res) => {
+    Guide.commentsList( (err, data) => {
+        console.log(1);
+      if (err) {
+        res.status(500).send({
+          message:
+            err.message || 'Some error occurred while get the task.'
+        });
+      } else {
+        console.log(1);
+        res.send(data);
+      }
+    });
+  };
+
+  const updateComment = (req, res) => {
+    console.log(req.params.id);
+    Guide.updateComment( req.params.id, req.body ,(err, data) => {
+        console.log(1);
+        if (err) {
+        res.status(500).send({
+            message:
+            err.message || 'Some error occurred while creating the task.'
+        });
+        } else {
+        console.log(1);
+        res.send(data);
+        }
+    });
+    };
+
 module.exports = {
     addGuide ,
     getGuide ,
@@ -122,5 +153,7 @@ module.exports = {
     getGuideListByTitle,
     updateGuideList,
     deleteSpecificGuideFromList,
-    addComment
+    addComment,
+    commentsList,
+    updateComment
 };

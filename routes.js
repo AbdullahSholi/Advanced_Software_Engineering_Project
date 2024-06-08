@@ -29,6 +29,7 @@ const { getPublicData, getUserData, getAdminData } = require('../Advanced_Softwa
 
 // Create a new task
 router.post('/GreenThumb/api/v1/new-garden', gardenController.addGarden);
+router.post('/GreenThumb/api/v1/new-user-garden', gardenController.addUserGarden);
 router.get("/GreenThumb/api/v1/gardens-list", gardenController.getGardenList);
 router.get("/GreenThumb/api/v1/garden-list/:id", gardenController.getGardenListById);
 router.get("/GreenThumb/api/v1/garden-list-by-name/:name", gardenController.getGardenListByName);
@@ -61,6 +62,8 @@ router.delete("/GreenThumb/api/v1/specific-guide-from-list/:id", guideController
 
 // Comment 
 router.post('/GreenThumb/api/v1/add-comment', guideController.addComment);
+router.get('/GreenThumb/api/v1/comments-list', guideController.commentsList);
+router.patch("/GreenThumb/api/v1/comments/:id", guideController.updateComment);
 
 
 // VolunteerEvent
@@ -130,14 +133,23 @@ router.patch("/GreenThumb/api/v1/activity/:id", activityController.updateActivit
 router.delete("/GreenThumb/api/v1/activity/:id", activityController.deleteActivity)
 
 //---For access data base on the role -----
-router.get('/GreenThumb/api/v1/public', getPublicData);
-router.get('/GreenThumb/api/v1/user', authMiddleware, roleMiddleware(['user', 'admin']), userController.getUserData);
-router.get('/GreenThumb/api/v1/admin', authMiddleware, roleMiddleware(['admin']), userController.getAdminData);
-//--------
+
 
 //------------
 router.post('/GreenThumb/api/v1/register',userController.register);
 router.post('/GreenThumb/api/v1/login',userController.login);
+
+router.get('/GreenThumb/api/v1/public', getPublicData);
+
+
+// user data
+router.get('/GreenThumb/api/v1/user', authMiddleware, roleMiddleware(['user', 'admin']), userController.getUserData);
+
+
+
+
+router.get('/GreenThumb/api/v1/admin', authMiddleware, roleMiddleware(['admin']), userController.getAdminData);
+
 //------------
 
 // Generate Report
