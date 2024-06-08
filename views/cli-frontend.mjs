@@ -537,8 +537,61 @@ const Planting_Activity = (UserID, PlotID) => {
 }
 
 const Exchange = (UserID) => {
-  console.log("Exchange");
-  mainMenu(UserID);
+  inquirer
+    .prompt({
+      type: 'list',
+      name: 'action',
+      message: 'What would you like to do?',
+      choices: [
+        'Add Exchange',
+        'Display All Exchanges',
+        'Display Exchange by id',
+        'Display Exchanges by Offer User Id',
+        'Display Exchanges by Requestor User Id',
+        'Display Exchanges by status',
+        'Update Exchange data',
+        'Delete a specific Exchange',
+        "Enter to resources window",
+        'Go Back'
+      ]
+    })
+    .then((answers) => {
+      switch (answers.action) {
+        case 'Add Exchange':
+          AddExchange(UserID);
+          break;
+        case 'Display All Exchanges':
+          DisplayAllExchanges(UserID);
+          break;
+        case 'Display Exchange by id':
+          DisplayExchangeById();
+          break;
+        case 'Display Exchanges by Offer User Id':
+          DisplayExchangesByOfferUserId(UserID);
+          break;
+
+        case 'Display Exchanges by Requestor User Id':
+          DisplayExchangesByRequestorUserId(UserID);
+          break;
+          case 'Display Exchanges by status':
+            DisplayExchangesByStatus(UserID);
+            break;
+        case 'Update Exchange data':
+          UpdateExchangeData(UserID);
+          break;
+        case 'Delete a specific Exchange':
+          DeleteASpecificExchange(UserID);
+          break;
+          case 'Enter to resources window':
+            Resources(UserID);
+            break; 
+        case 'Go Back':
+          mainMenu(UserID);
+          break;
+        default:
+          console.log('Invalid choice');
+      }
+    });
 }
 
 
@@ -2042,6 +2095,323 @@ const DeleteASpecificPlot = (UserID, GardenID) => {
 }
 
 /* ***************** */
+
+
+
+// Exchange functions
+/* ***************** */
+const AddExchange = (UserID) => {
+  inquirer
+    .prompt([
+      {
+        type: 'input',
+        name: 'RequestorUserID',
+        message: 'Enter requestor user id:',
+        
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter requestor user id.';
+          }
+        }
+      },
+      {
+        type: 'input',
+        name: 'Status',
+        message: 'Enter exchange status:',
+        default:"Offered, Requested or Completed",
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter exchange status.';
+          }
+        }
+      },
+    ])
+    .then(answers => {
+      console.log('Enter exchange data');
+      console.log(answers)
+      axios.get("http://localhost:3000/GreenThumb/api/v1/exchanges-list").then(response1 => {
+        // Define the URL to which you want to send the POST request
+        const url = 'http://localhost:3000/GreenThumb/api/v1/new-exchange';
+        console.log(response1.data.length + 1);
+        // Data to be sent in the POST request
+        const postData = {
+          ExchangeID: response1.data.length + 1,
+          OfferUserID: UserID,
+          RequestorUserID: answers.RequestorUserID,
+          Status: answers.Status
+        };
+
+        axios.post(url, postData)
+          .then(response2 => {
+            // Handle success
+            console.log(postData);
+            Exchange(UserID);
+
+            
+            /////////////////////
+
+          }).catch(error => {
+            console.error('Error:', error);
+            Exchange(UserID);
+          })
+
+
+
+      })
+        .catch(error => {
+          // Handle error
+          console.error('Error:', error);
+          Exchange(UserID);
+        });
+
+    })
+    .catch((error) => {
+      console.error('Login failed:', error);
+    });
+  // Garden(UserID);
+}
+
+const DisplayAllExchanges = (UserID) => {
+  axios.get("http://localhost:3000/GreenThumb/api/v1/exchanges-list").then(response => {
+    console.log(response.data);
+    Exchange(UserID);
+  }).catch(error => {
+
+  })
+}
+
+const DisplayExchangeById = (UserID) => {
+  inquirer.prompt(
+    [
+      {
+        type: 'input',
+        name: 'ExchangeID',
+        message: 'Enter your Exchange Id:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter your Exchange Id.';
+          }
+        }
+      },
+    ]
+  ).then(answers => {
+    axios.get(`http://localhost:3000/GreenThumb/api/v1/exchange/${answers.ExchangeID}`).then(response => {
+      console.log(response.data);
+      Exchange(UserID);
+    }).catch(error => {
+      console.error('Error message:', error);
+      Exchange(UserID);
+    })
+  }).catch((error) => {
+    console.error('Failed to get garden via id:', error);
+    // Optionally, you can return to the main menu even in case of an error
+    Exchange(UserID);
+  })
+
+}
+
+const DisplayExchangesByOfferUserId = (UserID) => {
+  inquirer.prompt(
+    [
+      {
+        type: 'input',
+        name: 'OfferUserID',
+        message: 'Enter Offer User Id:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter Offer User Id.';
+          }
+        }
+      },
+    ]
+  ).then(answers => {
+    axios.get(`http://localhost:3000/GreenThumb/api/v1/exchanges-list-by-offer-user/${answers.OfferUserID}`).then(response => {
+      console.log(response.data);
+      Exchange(UserID);
+    }).catch(error => {
+      console.error('Error message:', error);
+      Exchange(UserID);
+    })
+  }).catch((error) => {
+    console.error('Failed to get garden via id:', error);
+    // Optionally, you can return to the main menu even in case of an error
+    Exchange(UserID);
+  })
+}
+
+const DisplayExchangesByRequestorUserId = (UserID) => {
+  inquirer.prompt(
+    [
+      {
+        type: 'input',
+        name: 'RequestorUserID',
+        message: 'Enter Requestor User ID:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter Requestor User ID.';
+          }
+        }
+      },
+    ]
+  ).then(answers => {
+    axios.get(`http://localhost:3000/GreenThumb/api/v1/exchanges-list-by-requestor-user/${answers.RequestorUserID}`).then(response => {
+      console.log(response.data);
+      Exchange(UserID);
+    }).catch(error => {
+      console.error('Error message:', error);
+      Exchange(UserID);
+
+    })
+  }).catch((error) => {
+    console.error('Failed to get garden via id:', error);
+    // Optionally, you can return to the main menu even in case of an error
+    Exchange(UserID);
+
+  })
+}
+
+const DisplayExchangesByStatus= (UserID) => {
+  inquirer.prompt(
+    [
+      {
+        type: 'input',
+        name: 'status',
+        message: 'Enter exchange status:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter exchange status.';
+          }
+        }
+      },
+    ]
+  ).then(answers => {
+    axios.get(`http://localhost:3000/GreenThumb/api/v1/exchanges-list-by-status/${answers.status}`).then(response => {
+      console.log(response.data);
+      Exchange(UserID);
+    }).catch(error => {
+      console.error('Error message:', error);
+      Exchange(UserID);
+
+    })
+  }).catch((error) => {
+    console.error('Failed to get garden via id:', error);
+    // Optionally, you can return to the main menu even in case of an error
+    Exchange(UserID);
+
+  })
+}
+
+
+const UpdateExchangeData = (UserID) => {
+  inquirer.prompt(
+    [
+      {
+        type: 'input',
+        name: 'ExchangeID',
+        message: 'Enter your Exchange Id:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter your Exchange Id.';
+          }
+        }
+      },
+    ]
+  ).then(answers => {
+    console.log("Enter data to update")
+
+    inquirer.prompt([
+      {
+        type: 'input',
+        name: 'status',
+        message: 'Enter exchange status:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter exchange status.';
+          }
+        }
+      },
+
+    ]).then(answers1 => {
+      axios.patch(`http://localhost:3000/GreenThumb/api/v1/exchange/${answers.ExchangeID}`, {
+        Status: answers1.status
+      }).then(response => {
+        console.log({
+          GardenID: answers.GardenID,
+          Status: answers1.status
+        });
+
+        Exchange(UserID);
+      }).catch(error => {
+        console.error('Error message:', error);
+        Exchange(UserID);
+
+      })
+    }).catch(error => {
+
+    })
+
+
+  }).catch((error) => {
+    console.error('Failed to get exchange via id:', error);
+    // Optionally, you can return to the main menu even in case of an error
+    Exchange(UserID);
+
+  })
+}
+
+const DeleteASpecificExchange = (UserID) => {
+  inquirer.prompt(
+    [
+      {
+        type: 'input',
+        name: 'ExchangeID',
+        message: 'Enter Exchange Id:',
+        validate: function (value) {
+          if (value.length) {
+            return true;
+          } else {
+            return 'Please enter Exchange Id.';
+          }
+        }
+      },
+    ]
+  ).then(answers => {
+    axios.delete(`http://localhost:3000/GreenThumb/api/v1/exchange/${answers.ExchangeID}`).then(response => {
+      console.log(response.data);
+      Exchange(UserID);
+    }).catch(error => {
+      console.error('Error message:', error);
+      Exchange(UserID);
+
+    })
+  }).catch((error) => {
+    console.error('Failed to get exchange via id:', error);
+    // Optionally, you can return to the main menu even in case of an error
+    Exchange(UserID);
+
+  })
+}
+
+/* ***************** */
+
+
+
 
 /////////////////////
 
