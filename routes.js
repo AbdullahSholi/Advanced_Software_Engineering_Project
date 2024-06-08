@@ -30,6 +30,7 @@ const { getPublicData, getUserData, getAdminData } = require('../Advanced_Softwa
 // Create a new task
 router.post('/GreenThumb/api/v1/new-garden', gardenController.addGarden);
 router.post('/GreenThumb/api/v1/new-user-garden', gardenController.addUserGarden);
+router.get('/GreenThumb/api/v1/user-garden-list/:id', gardenController.getUserGardenList);
 router.get("/GreenThumb/api/v1/gardens-list", gardenController.getGardenList);
 router.get("/GreenThumb/api/v1/garden-list/:id", gardenController.getGardenListById);
 router.get("/GreenThumb/api/v1/garden-list-by-name/:name", gardenController.getGardenListByName);
