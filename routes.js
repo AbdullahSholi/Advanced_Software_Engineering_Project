@@ -71,9 +71,9 @@ router.patch("/GreenThumb/api/v1/comments/:id", authMiddleware, roleMiddleware([
 // VolunteerEvent
 
 router.post('/GreenThumb/api/v1/new-event', authMiddleware, roleMiddleware(['admin']), eventController.addEvent);
-router.get("/GreenThumb/api/v1/events-list", authMiddleware, roleMiddleware(['volunteer','user','admin']), eventController.getEventsList);
-router.get("/GreenThumb/api/v1/event/:id", authMiddleware, roleMiddleware(['volunteer','user','admin']), eventController.getEventById);
-router.get("/GreenThumb/api/v1/events-list-by-garden/:id", authMiddleware, roleMiddleware(['volunteer','user','admin']), eventController.getEventsListByGardenId);
+router.get("/GreenThumb/api/v1/events-list", authMiddleware, roleMiddleware(['user','admin']), eventController.getEventsList);
+router.get("/GreenThumb/api/v1/event/:id", authMiddleware, roleMiddleware(['user','admin']), eventController.getEventById);
+router.get("/GreenThumb/api/v1/events-list-by-garden/:id", authMiddleware, roleMiddleware(['user','admin']), eventController.getEventsListByGardenId);
 router.patch("/GreenThumb/api/v1/event/:id", authMiddleware, roleMiddleware(['admin']), eventController.updateEvent)
 router.delete("/GreenThumb/api/v1/event/:id", authMiddleware, roleMiddleware(['admin']), eventController.deleteEvent)
 
@@ -97,12 +97,12 @@ router.delete("/GreenThumb/api/v1/plant/:id", authMiddleware, roleMiddleware(['a
 
 // Partnership
 
-router.post('/GreenThumb/api/v1/new-partnership', authMiddleware, roleMiddleware(['admin']), partnershipController.addPartnership);
+router.post('/GreenThumb/api/v1/new-partnership', authMiddleware, roleMiddleware(['user','admin']), partnershipController.addPartnership);
 router.get("/GreenThumb/api/v1/partnerships-list", authMiddleware, roleMiddleware(['user','admin']), partnershipController.getPartnershipsList);
 router.get("/GreenThumb/api/v1/partnership/:id", authMiddleware, roleMiddleware(['user','admin']), partnershipController.getPartnershipById);
 router.get("/GreenThumb/api/v1/partnerships-list-by-name/:name", authMiddleware, roleMiddleware(['user','admin']), partnershipController.getPartnershipsListByName);
-router.patch("/GreenThumb/api/v1/partnership/:id", authMiddleware, roleMiddleware(['admin']), partnershipController.updatePartnership)
-router.delete("/GreenThumb/api/v1/partnership/:id", authMiddleware, roleMiddleware(['admin']), partnershipController.deletePartnership)
+router.patch("/GreenThumb/api/v1/partnership/:id", authMiddleware, roleMiddleware(['user','admin']), partnershipController.updatePartnership)
+router.delete("/GreenThumb/api/v1/partnership/:id", authMiddleware, roleMiddleware(['user','admin']), partnershipController.deletePartnership)
 
 
 // Resource 
