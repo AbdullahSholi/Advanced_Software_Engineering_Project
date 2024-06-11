@@ -1,0 +1,2071 @@
+{
+	"info": {
+		"_postman_id": "d2e056c1-81e5-461b-b279-5b9d84ff7645",
+		"name": "Advanced Software Engineering Project",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32720335",
+		"_collection_link": "https://www.postman.com/crimson-firefly-952604/workspace/team-workspace/collection/32720335-d2e056c1-81e5-461b-b279-5b9d84ff7645?action=share&source=collection_link&creator=32720335"
+	},
+	"item": [
+		{
+			"name": "Garden",
+			"item": [
+				{
+					"name": "new-garden",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"GardenID\":13,\r\n    \"Name\": \"Jannat-Xlarge13\",\r\n    \"Location\": \"Nablus\",\r\n    \"Description\": \"Best Flowers13\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/new-garden",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"new-garden"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "gardens-list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/gardens-list",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"gardens-list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "garden-by-id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/garden-list/5",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"garden-list",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "garden-by-name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/garden-list-by-name/Jannat-Xlarge",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"garden-list-by-name",
+								"Jannat-Xlarge"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "garden-list-by-location",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/garden-list-by-location/Nablus",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"garden-list-by-location",
+								"Nablus"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "garden",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"GardenID\": 7, \r\n    \"Name\": \"NOn\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/garden/5",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"garden",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "specific-garden-from-list",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/specific-garden-from-list/13",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"specific-garden-from-list",
+								"13"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Guide",
+			"item": [
+				{
+					"name": "new-guide",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"GuideID\":2,\r\n    \"Title\":\"First Guide\",\r\n    \"Content\":\"Best Guide\",\r\n    \"Rate\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/new-guide",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"new-guide"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "guide",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"GuideID\":1 , \r\n\"AuthorUserID\":1 ,\r\n\"Title\":\"Test\" , \r\n\"Content\": \"Test1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/guide/1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"guide",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "specific-guide-from-list",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/specific-guide-from-list/1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"specific-guide-from-list",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "guide-list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/guide-list",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"guide-list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "guide-by-id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/guide/1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"guide",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "guide-list-by-title",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/guide-list-by-title/Test",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"guide-list-by-title",
+								"Test"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "new-user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"UserID\":1,\r\n    \"Username\":\"Abdulla1\",\r\n    \"Email\":\"groupgroup00001@gmail.com\",\r\n    \"password\":\"1234\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/new-user",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"new-user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "users-list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/users-list",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"users-list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/user/1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"user",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "users-list-by-name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/users-list-by-name/Abdullah",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"users-list-by-name",
+								"Abdullah"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "users-list-by-email",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/users-list-by-email/groupgroup00000@gmail.com",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"users-list-by-email",
+								"groupgroup00000@gmail.com"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user-data",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"UserID\": 5,\r\n    \"Username\": \"Ali\",\r\n    \"Email\":\"groupgroup00003@gmail.com\",\r\n    \"Password\":\"123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/user-data/1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"user-data",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/user/2",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"user",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Event",
+			"item": [
+				{
+					"name": "new-event",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"EventID\":1,\r\n    \"GardenID\": 2,\r\n    \"Date\": \"2025-12-24\",\r\n    \"Description\": \"Washing\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/new-event",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"new-event"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "events-list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/events-list",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"events-list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "event-by-id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/event/1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"event",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "events-list-by-garden-id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/events-list-by-garden/2",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"events-list-by-garden",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "event",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"EventID\": 1,\r\n    \"GardenID\": 6, \r\n    \"Date\": \"2025-02-02\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/event/1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"event",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "event",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/event/1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"event",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Plot",
+			"item": [
+				{
+					"name": "new-plot",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"PlotID\":2,\r\n    \"GardenID\":3,\r\n    \"PlotSize\":10,\r\n    \"SunLight\":\"Partial Shade\",\r\n    \"SoilType\": \"sand\",\r\n    \"Available\":true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/new-plot",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"new-plot"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "plot",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"PlotID\":1,\r\n    \"GardenID\":2,\r\n    \"PlotSize\":20,\r\n    \"SunLight\":\"Full Sun\",\r\n    \"SoilType\": \"sand\",\r\n    \"Available\":true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/plot/1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"plot",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "plot",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/plot/1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"plot",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "plots-list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/plots-list",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"plots-list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "plot-by-id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/plot/2",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"plot",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "plots-list-by-garden",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/plots-list-by-garden/2",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"plots-list-by-garden",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Plant",
+			"item": [
+				{
+					"name": "new-plant",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"PlantID\":2,\r\n    \"Name\":\"Tomatoes\",\r\n    \"GrowingSeason\":\"Spring to late summer\",\r\n    \"Description\":\"Warm-season crop; plant after the last frost date\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/new-plant",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"new-plant"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "plants-list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/plants-list",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"plants-list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "plant",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/plant/2",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"plant",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "plants-list-by-name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/plants-list-by-name/Tomatoes",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"plants-list-by-name",
+								"Tomatoes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "plant",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"PlantID\":2,\r\n    \"Name\":\"Aloe Vera\",\r\n    \"GrowingSeason\":\"Year-round (indoors)\",\r\n    \"Description\":\"Succulent; prefers bright, indirect light and minimal watering\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/plant/2",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"plant",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "plant",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/plant/2",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"plant",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Partnership",
+			"item": [
+				{
+					"name": "new-partnership",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"PartnershipID\":1,\r\n    \"Name\":\"Matjarcon Company\",\r\n    \"Type\":\"Greenhouses\",\r\n    \"ContactInfo\":\"+970592659066\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/new-partnership",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"new-partnership"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "partnerships-list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/partnerships-list",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"partnerships-list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "partnership",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/partnership/1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"partnership",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "partnerships-list-by-name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/partnerships-list-by-name/Matjarcon Company",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"partnerships-list-by-name",
+								"Matjarcon Company"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "partnership",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"PartnershipID\":1,\r\n    \"Name\":\"Matjarcon Company1\",\r\n    \"Type\":\"Greenhouses1\",\r\n    \"ContactInfo\":\"+970592659066\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/partnership/1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"partnership",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "partnership",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/partnership/1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"partnership",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Resource",
+			"item": [
+				{
+					"name": "new-resource",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ResourceID\":2,\r\n    \"Type\":\"Compost and Soil Amendments\",\r\n    \"Description\":\"Sharing or trading compost, mulch, and soil enhancers.\",\r\n    \"AvailableQuantity\": 300\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/new-resource",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"new-resource"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "resources-list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/resources-list",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"resources-list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "resource",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/resource/1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"resource",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "resources-list-by-type",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/resources-list-by-type/Seeds and Plants",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"resources-list-by-type",
+								"Seeds and Plants"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "resource",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ResourceID\":2,\r\n    \"Type\":\"Compost and Soil Amendments\",\r\n    \"Description\":\"Sharing or trading compost, mulch, and soil enhancers.\",\r\n    \"AvailableQuantity\": 300\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/resource/2",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"resource",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "resource",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/resource/1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"resource",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Exchange",
+			"item": [
+				{
+					"name": "new-exchange",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ExchangeID\":2,\r\n    \"OfferUserID\":2,\r\n    \"RequestorUserID\":1,\r\n    \"Status\":\"Requested\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/new-exchange",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"new-exchange"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "exchanges-list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/exchanges-list",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"exchanges-list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "exchange",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/exchange/1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"exchange",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "exchanges-list-by-resource",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/exchanges-list-by-resource/2",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"exchanges-list-by-resource",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "exchange",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ExchangeID\":2,\r\n    \"ResourceID\":2,\r\n    \"OfferUserID\":2,\r\n    \"RequestorUserID\":1,\r\n    \"Status\":\"Completed\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/exchange/2",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"exchange",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "exchange",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/exchange/1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"exchange",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "exchanges-list-by-offer-user",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/exchanges-list-by-offer-user/1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"exchanges-list-by-offer-user",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "exchanges-list-by-requestor-user",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/exchanges-list-by-requestor-user/2",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"exchanges-list-by-requestor-user",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Planning Activity",
+			"item": [
+				{
+					"name": "new-activity",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ActivityID\":2,\r\n    \"UserID\":2,\r\n    \"PlotID\":2,\r\n    \"PlantDate\":\"2024-06-24\",\r\n    \"HarvestDate\":\"2024-10-24\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/new-activity",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"new-activity"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "activities-list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/activities-list",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"activities-list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "activity",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/activity/2",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"activity",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "activities-list-by-user",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/activities-list-by-user/1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"activities-list-by-user",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "activities-list-by-plot",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/activities-list-by-plot/2",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"activities-list-by-plot",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "activity",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ActivityID\":2,\r\n    \"UserID\":2,\r\n    \"PlotID\":2,\r\n    \"PlantDate\":\"2024-06-24\",\r\n    \"HarvestDate\":\"2024-10-24\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/activity/2",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"activity",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "activity",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/activity/1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"activity",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Reports",
+			"item": [
+				{
+					"name": "generate-report",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/generate-report",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"generate-report"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Comment",
+			"item": [
+				{
+					"name": "add-comment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"CommentID\":1,\r\n    \"GuideID\": 1,\r\n    \"Comment\":\"First Comment\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/add-comment",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"add-comment"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Role-Based-Access-Control",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "\r\n{\r\n    \"UserID\":2,\r\n    \"Username\":\"Abdullah2\",\r\n    \"Email\":\"groupgroup00002@gmail.com\",\r\n    \"Password\":\"1234\",\r\n    \"Role\": \"admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/register",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjEsIlVzZXJuYW1lIjoiQWJkdWxsYWgxIiwiUm9sZSI6ImFkbWluIiwiaWF0IjoxNzE3Nzg2MjIwLCJleHAiOjE3MTc3ODk4MjB9.4tYK5nvI62u-nD57RUeJB__0O2j4wmwAAEN9qy8uCdc",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \r\n     \"email\": \"groupgroup00000@gmail.com\",\r\n    \t\"password\": \"1234\"\r\n\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/login",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user-data",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwibmFtZSI6IlJhc2hpZCIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzE3Nzc0OTQ1LCJleHAiOjE3MTc3Nzg1NDV9.cvrPM_IRK48hyJh8ufR-kNCd0g34jg-MjKR9C1SqNgU"
+							}
+						],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/user",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "admin-data",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywibmFtZSI6IlJhc2hpZCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcxNzc3NDgxNCwiZXhwIjoxNzE3Nzc4NDE0fQ.P1WyTl8icZidfjMGwZY4wfcLS4DB4LHd64EVHZtY1f4"
+							}
+						],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/admin",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"admin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "public-data",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/public",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"public"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Join_Tables",
+			"item": [
+				{
+					"name": "exchange-resource-list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/exchange-resource-list",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"exchange-resource-list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "new-exchange-resource",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Exchange_Resource_ID\": 1,\r\n    \"ExchangeID\": 1,\r\n    \"ResourceID\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/new-exchange-resource",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"new-exchange-resource"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "plantingactivity-plant-list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/plantingactivity-plant-list",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"plantingactivity-plant-list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "new-plantingactivity-plant",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"PlantingActivity_Plant_ID\": 1,\r\n\t\t\"PlantID\": 2,\r\n\t\t\"ActivityID\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/new-plantingactivity-plant",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"new-plantingactivity-plant"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "resource-partnership-list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/resource-partnership-list",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"resource-partnership-list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "new-resource-partnership",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"Resource_Partnership_ID\": 1,\r\n\t\"ResourceID\": 1,\r\n\t\"PartnershipID\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/new-resource-partnership",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"new-resource-partnership"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user-gardens-list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/user-gardens-list",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"user-gardens-list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "new-user-garden",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"UserGardenID\": 3,\r\n        \"UserID\": 1,\r\n        \"GardenID\": 3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/GreenThumb/api/v1/new-user-garden",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"GreenThumb",
+								"api",
+								"v1",
+								"new-user-garden"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
