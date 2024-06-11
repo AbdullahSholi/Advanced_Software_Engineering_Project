@@ -118,11 +118,11 @@ const registerPage = () => {
           Password: answers.password,
           Role: answers.role
         };
-        axios.post(url, postData)
+        axios.post(url, postData, )
           .then(response => {
             // Handle success
             console.log('Response:', response.data);
-            mainMenu(response.data.length + 1);
+            mainMenu(response.data.length + 1, response.data.token);
           })
           .catch(error => {
             // Handle error
@@ -187,12 +187,14 @@ const loginPage = () => {
       axios.post(url, postData)
         .then(response => {
           // Handle success
-          console.log('Response:', response.data.user.UserID);
-          mainMenu(response.data.user.UserID);
+          // console.log('Response:', response.data.user.UserID);
+          // console.log('Response:', response.data.token);
+          mainMenu(response.data.user.UserID, response.data.token);
         })
         .catch(error => {
           // Handle error
           console.error('Error:', error);
+          loginPage();
         });
 
 
@@ -201,12 +203,13 @@ const loginPage = () => {
     })
     .catch((error) => {
       console.error('Login failed:', error);
+      loginPage();
     });
 };
 
 ////////////////////////
 
-const mainMenu = (UserID) => {
+const mainMenu = (UserID, token) => {
   inquirer
     .prompt({
       type: 'list',
@@ -222,25 +225,29 @@ const mainMenu = (UserID) => {
     .then((answers) => {
       switch (answers.action) {
         case 'Garden':
-          Garden(UserID);
+          Garden(UserID, token);
           break;
         case 'Guide':
-          Guide(UserID);
+          Guide(UserID, token);
           break;
         case 'Exchange':
-          Exchange(UserID);
+          Exchange(UserID, token);
           break;
         case 'Logout':
           home();
           break;
 
-        default:
+        default:{
           console.log('Invalid choice');
+          mainMenu(UserID, token);
+        }
+          
       }
     });
 };
 
-const Garden = (UserID) => {
+const Garden = (UserID, token) => {
+  // console.log(token)
   inquirer
     .prompt({
       type: 'list',
@@ -262,45 +269,49 @@ const Garden = (UserID) => {
     .then((answers) => {
       switch (answers.action) {
         case 'Add Garden':
-          AddGarden(UserID);
+          AddGarden(UserID, token);
           break;
         case 'Display All Gardens':
-          DisplayAllGardens(UserID);
+          DisplayAllGardens(UserID, token);
           break;
         case 'Display garden by id':
-          DisplayGardenById();
+          DisplayGardenById(UserID, token);
           break;
         case 'Display gardens by name':
-          DisplayGardensByName(UserID);
+          DisplayGardensByName(UserID, token);
           break;
 
         case 'Display gardens by location':
-          DisplayGardensByLocations(UserID);
+          DisplayGardensByLocations(UserID, token);
           break;
 
         case 'Update garden data':
-          UpdateGardenData(UserID);
+          UpdateGardenData(UserID, token);
           break;
         case 'Delete a specific garden':
-          DeleteASpecificGarden(UserID);
+          DeleteASpecificGarden(UserID, token);
           break;
         case 'Enter to event window':
-          Event(UserID);
+          Event(UserID, token);
           break;
         case 'Enter to plot window':
-          Plot(UserID);
+          console.log(UserID);
+          Plot(UserID, token);
           break;
         case 'Go Back':
-          mainMenu(UserID);
+          mainMenu(UserID, token);
           break;
-        default:
+        default:{
           console.log('Invalid choice');
+          Garden(UserID, token);
+        }
+          
       }
     });
 };
 
 
-const Guide = (UserID) => {
+const Guide = (UserID, token) => {
 
   inquirer
     .prompt({
@@ -320,38 +331,54 @@ const Guide = (UserID) => {
     .then((answers) => {
       switch (answers.action) {
         case 'Add Guide':
-          AddGuide(UserID);
+          AddGuide(UserID, token);
           break;
         case 'Display All Guides':
-          DisplayAllGuides(UserID);
+          DisplayAllGuides(UserID, token);
           break;
         case 'Display guide by id':
-          DisplayGuideById();
+          DisplayGuideById(UserID, token);
           break;
         case 'Display guides by title':
-          DisplayGuidesByTitle(UserID);
+          DisplayGuidesByTitle(UserID, token);
           break;
 
         case 'Update guide data':
-          UpdateGuideData(UserID);
+          UpdateGuideData(UserID, token);
           break;
 
         case 'Delete a specific guide':
-          DeleteASpecificGuide(UserID);
+          DeleteASpecificGuide(UserID, token);
           break;
         case 'Go Back':
-          mainMenu(UserID);
+          mainMenu(UserID, token);
           break;
-        default:
+        default:{
           console.log('Invalid choice');
+          Guide(UserID, token);
+        }
+          
       }
     });
 }
 
-const Event = (UserID) => {
-  axios.get(`http://localhost:3000/GreenThumb/api/v1/user-garden-list/${UserID}`).then(response => {
+const Event = (UserID, token) => {
+  console.log(UserID);
+  axios.get(`http://localhost:3000/GreenThumb/api/v1/user-garden-list/${UserID}`, {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
+    console.log(response.data);
     console.log(response.data[0].GardenID);
     const GardenID = response.data[0].GardenID;
+    if(GardenID == undefined){
+      console.log("Garden not found!");
+      Garden(UserID, token);
+    }
+    if(GardenID == undefined){
+      console.log("Garden not found!!");
+    } else{
     inquirer
       .prompt({
         type: 'list',
@@ -370,42 +397,51 @@ const Event = (UserID) => {
       .then((answers) => {
         switch (answers.action) {
           case 'Add Event':
-            AddEvent(UserID, GardenID);
+            AddEvent(UserID, GardenID, token);
             break;
           case 'Display All Events':
-            DisplayAllEvents(UserID, GardenID);
+            DisplayAllEvents(UserID, GardenID, token);
             break;
           case 'Display Event by id':
-            DisplayEventById(UserID, GardenID);
+            DisplayEventById(UserID, GardenID, token);
             break;
           case 'Display Events by garden id':
-            DisplayEventsByGardenId(UserID, GardenID);
+            DisplayEventsByGardenId(UserID, GardenID, token);
             break;
 
           case 'Update event data':
-            UpdateEventData(UserID, GardenID);
+            UpdateEventData(UserID, GardenID, token);
             break;
 
           case 'Delete a specific event':
-            DeleteASpecificEvent(UserID, GardenID);
+            DeleteASpecificEvent(UserID, GardenID, token);
             break;
           case 'Go Back':
-            mainMenu(UserID);
+            mainMenu(UserID, token);
             break;
           default:
             console.log('Invalid choice');
+            Event(UserID, token);
+            
         }
       });
+    }
+      
   }).catch(error => {
-
+    console.log(error);
+    Garden(UserID, token);
   })
 
 }
 
 
-const Plot = (UserID) => {
-  axios.get(`http://localhost:3000/GreenThumb/api/v1/user-garden-list/${UserID}`).then(response => {
-    console.log(response.data[0].GardenID);
+const Plot = (UserID, token) => {
+  axios.get(`http://localhost:3000/GreenThumb/api/v1/user-garden-list/${UserID}`, {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
+    // console.log(response.data[0].GardenID);
     const GardenID = response.data[0].GardenID;
     inquirer
       .prompt({
@@ -426,44 +462,53 @@ const Plot = (UserID) => {
       .then((answers) => {
         switch (answers.action) {
           case 'Add Plot':
-            AddPlot(UserID, GardenID);
+            AddPlot(UserID, GardenID, token);
             break;
           case 'Display All Plots':
-            DisplayAllPlots(UserID, GardenID);
+            DisplayAllPlots(UserID, GardenID, token);
             break;
           case 'Display Plot by id':
-            DisplayPlotById(UserID, GardenID);
+            DisplayPlotById(UserID, GardenID, token);
             break;
           case 'Display Plots by garden id':
-            DisplayPlotsByGardenId(UserID, GardenID);
+            DisplayPlotsByGardenId(UserID, GardenID, token);
             break;
 
           case 'Update plot data':
-            UpdatePlotData(UserID, GardenID);
+            UpdatePlotData(UserID, GardenID, token);
             break;
 
           case 'Delete a specific plot':
-            DeleteASpecificPlot(UserID, GardenID);
+            DeleteASpecificPlot(UserID, GardenID, token);
             break;
           case 'Enter to activity window':
-            SelectPlot(UserID);
+            SelectPlot(UserID, token);
             break;
           case 'Go Back':
-            mainMenu(UserID);
+            mainMenu(UserID, token);
             break;
-          default:
-            console.log('Invalid choice');
+            default:{
+              console.log('Invalid choice');
+              Plot(UserID, token);
+  
+            }
         }
       });
+      
   }).catch(error => {
-
+    console.log("Error", error);
+    Garden(UserID, token);
   })
 
 }
 
 
-const SelectPlot = (UserID) => {
-  axios.get(`http://localhost:3000/GreenThumb/api/v1/plots-list`).then(response => {
+const SelectPlot = (UserID, token) => {
+  axios.get(`http://localhost:3000/GreenThumb/api/v1/plots-list`, {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
 
     inquirer
       .prompt({
@@ -477,19 +522,26 @@ const SelectPlot = (UserID) => {
 
         if (selectedPlot) {
           console.log(selectedPlot);
-          Planting_Activity(UserID, selectedPlot.PlotID);
+          Planting_Activity(UserID, selectedPlot.PlotID, token);
         } else {
           console.error('Selected plot not found.');
+          SelectPlot(UserID, token);
         }
       });
   }).catch(error => {
     console.error('Error fetching plots:', error);
+    Plot(UserID, token);
+
   });
 };
 
 
-const Planting_Activity = (UserID, PlotID) => {
-  // axios.get(`http://localhost:3000/GreenThumb/api/v1/user-garden-list/${UserID}`).then(response=>{}).catch(error=>{});
+const Planting_Activity = (UserID, PlotID, token) => {
+  // axios.get(`http://localhost:3000/GreenThumb/api/v1/user-garden-list/${UserID}`, {
+//     headers: {
+//         'Authorization': `Bearer ${token}`
+//     }
+// }).then(response=>{}).catch(error=>{});
   inquirer
     .prompt({
       type: 'list',
@@ -510,41 +562,44 @@ const Planting_Activity = (UserID, PlotID) => {
     .then((answers) => {
       switch (answers.action) {
         case 'Add Planting Activity':
-          AddPlantingActivity(UserID, PlotID);
+          AddPlantingActivity(UserID, PlotID, token);
           break;
         case 'Display All Activities':
-          DisplayAllActivities(UserID, PlotID);
+          DisplayAllActivities(UserID, PlotID, token);
           break;
         case 'Display Activity by id':
-          DisplayActivityById(UserID, PlotID);
+          DisplayActivityById(UserID, PlotID, token);
           break;
         case 'Display Activities by user id':
-          DisplayActivitiesByUserId(UserID, PlotID);
+          DisplayActivitiesByUserId(UserID, PlotID, token);
           break;
         case 'Display Activities by plot id':
-          DisplayActivitiesByPlotId(UserID, PlotID);
+          DisplayActivitiesByPlotId(UserID, PlotID, token);
           break;
         case 'Update activity data':
-          UpdateActivityData(UserID, PlotID);
+          UpdateActivityData(UserID, PlotID, token);
           break;
 
         case 'Enter to Plant window':
-          EnterToPlantWindow(UserID, PlotID);
+          EnterToPlantWindow(UserID, PlotID, token);
           break;
         case 'Delete a specific activity':
-          DeleteASpecificActivity(UserID, PlotID);
+          DeleteASpecificActivity(UserID, PlotID, token);
           break;
         case 'Go Back':
-          mainMenu(UserID);
+          mainMenu(UserID, token);
           break;
-        default:
+        default:{
+          Planting_Activity(UserID, PlotID, token);
           console.log('Invalid choice');
+        }
+          
       }
     });
 
 }
 
-const Exchange = (UserID) => {
+const Exchange = (UserID, token) => {
   inquirer
     .prompt({
       type: 'list',
@@ -566,43 +621,45 @@ const Exchange = (UserID) => {
     .then((answers) => {
       switch (answers.action) {
         case 'Add Exchange':
-          AddExchange(UserID);
+          AddExchange(UserID, token);
           break;
         case 'Display All Exchanges':
-          DisplayAllExchanges(UserID);
+          DisplayAllExchanges(UserID, token);
           break;
         case 'Display Exchange by id':
-          DisplayExchangeById();
+          DisplayExchangeById(UserID, token);
           break;
         case 'Display Exchanges by Offer User Id':
-          DisplayExchangesByOfferUserId(UserID);
+          DisplayExchangesByOfferUserId(UserID, token);
           break;
 
         case 'Display Exchanges by Requestor User Id':
-          DisplayExchangesByRequestorUserId(UserID);
+          DisplayExchangesByRequestorUserId(UserID, token);
           break;
         case 'Display Exchanges by status':
-          DisplayExchangesByStatus(UserID);
+          DisplayExchangesByStatus(UserID, token);
           break;
         case 'Update Exchange data':
-          UpdateExchangeData(UserID);
+          UpdateExchangeData(UserID, token);
           break;
         case 'Delete a specific Exchange':
-          DeleteASpecificExchange(UserID);
+          DeleteASpecificExchange(UserID, token);
           break;
         case 'Enter to resources window':
-          Resources(UserID);
+          Resources(UserID, token);
           break;
         case 'Go Back':
-          mainMenu(UserID);
+          mainMenu(UserID, token);
           break;
-        default:
-          console.log('Invalid choice');
+          default:{
+            Exchange(UserID, token);
+            console.log('Invalid choice');
+          }
       }
     });
 }
 
-const Resources = (UserID) => {
+const Resources = (UserID, token) => {
   inquirer
     .prompt({
       type: 'list',
@@ -622,38 +679,41 @@ const Resources = (UserID) => {
     .then((answers) => {
       switch (answers.action) {
         case 'Add Resource':
-          SelectExchange(UserID);
-          // AddResource(UserID);
+          SelectExchange(UserID, token);
+          // AddResource(UserID, token);
           break;
         case 'Display All Resources':
-          DisplayAllResources(UserID);
+          DisplayAllResources(UserID, token);
           break;
         case 'Display Resource by id':
-          DisplayResourceById(UserID);
+          DisplayResourceById(UserID, token);
           break;
         case 'Display Resources by type':
-          DisplayResourcesByType(UserID);
+          DisplayResourcesByType(UserID, token);
           break;
 
         case 'Update Resource data':
-          UpdateResourceData(UserID);
+          UpdateResourceData(UserID, token);
           break;
         case 'Delete a specific Resource':
-          DeleteASpecificResource(UserID);
+          DeleteASpecificResource(UserID, token);
           break;
         case 'Enter to Partnership window':
-          Partnership(UserID);
+          Partnership(UserID, token);
           break;
         case 'Go Back':
-          Exchange(UserID);
+          Exchange(UserID, token);
           break;
-        default:
+        default:{
           console.log('Invalid choice');
+          Resources(UserID, token);
+        }
+          
       }
     });
 }
 
-const Partnership = (UserID) => {
+const Partnership = (UserID, token) => {
   inquirer
     .prompt({
       type: 'list',
@@ -672,29 +732,33 @@ const Partnership = (UserID) => {
     .then((answers) => {
       switch (answers.action) {
         case 'Add Partnership':
-          SelectResource(UserID);
+          SelectResource(UserID, token);
           break;
         case 'Display All Partnerships':
-          DisplayAllPartnerships(UserID);
+          DisplayAllPartnerships(UserID, token);
           break;
         case 'Display Partnership by id':
-          DisplayPartnershipById(UserID);
+          DisplayPartnershipById(UserID, token);
           break;
         case 'Display Partnerships by name':
-          DisplayPartnershipsByName(UserID);
+          DisplayPartnershipsByName(UserID, token);
           break;
 
         case 'Update Partnership data':
-          UpdatePartnershipData(UserID);
+          UpdatePartnershipData(UserID, token);
           break;
         case 'Delete a specific Partnership':
-          DeleteASpecificPartnership(UserID);
+          DeleteASpecificPartnership(UserID, token);
           break;
         case 'Go Back':
-          Resources(UserID);
+          Resources(UserID, token);
           break;
         default:
-          console.log('Invalid choice');
+          {
+            console.log('Invalid choice');
+            Partnership(UserID, token);
+          }
+          
       }
     });
 }
@@ -705,7 +769,7 @@ const Partnership = (UserID) => {
 
 // Garden functions
 /* ***************** */
-const AddGarden = (UserID) => {
+const AddGarden = (UserID, token) => {
   console.log("AddGarden");
   inquirer
     .prompt([
@@ -749,7 +813,11 @@ const AddGarden = (UserID) => {
     .then(answers => {
       console.log('Enter garden data');
       console.log(answers)
-      axios.get("http://localhost:3000/GreenThumb/api/v1/gardens-list").then(response1 => {
+      axios.get("http://localhost:3000/GreenThumb/api/v1/gardens-list", {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    }).then(response1 => {
         // Define the URL to which you want to send the POST request
         const url = 'http://localhost:3000/GreenThumb/api/v1/new-garden';
         console.log(response1.data.length + 1);
@@ -761,21 +829,33 @@ const AddGarden = (UserID) => {
           Description: answers.description
         };
 
-        axios.post(url, postData)
+        axios.post(url, postData, {
+          headers: {
+              'Authorization': `Bearer ${token}`
+          }
+      })
           .then(response2 => {
             // Handle success
             console.log('Response2');
 
-            axios.get("http://localhost:3000/GreenThumb/api/v1/user-gardens-list").then(response3 => {
+            axios.get("http://localhost:3000/GreenThumb/api/v1/user-gardens-list", {
+              headers: {
+                  'Authorization': `Bearer ${token}`
+              }
+          }).then(response3 => {
               axios.post('http://localhost:3000/GreenThumb/api/v1/new-user-garden', {
                 UserGardenID: response3.data.length + 1,
                 UserID: UserID,
                 GardenID: response1.data.length + 1
-              })
+              }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
                 .then(response4 => {
                   // Handle success
                   console.log('Response4');
-                  Garden(UserID);
+                  Garden(UserID, token);
                   // mainMenu(response.data.user.UserID);
 
 
@@ -783,9 +863,11 @@ const AddGarden = (UserID) => {
                 .catch(error => {
                   // Handle error
                   console.error('Error:', error);
+                  Garden(UserID, token);
                 });
             }).catch(error => {
               console.error('Error:', error);
+              Garden(UserID, token);
             })
 
 
@@ -793,6 +875,7 @@ const AddGarden = (UserID) => {
 
           }).catch(error => {
             console.error('Error:', error);
+            Garden(UserID, token);
           })
 
 
@@ -801,25 +884,32 @@ const AddGarden = (UserID) => {
         .catch(error => {
           // Handle error
           console.error('Error:', error);
+          Garden(UserID, token);
         });
 
     })
     .catch((error) => {
       console.error('Login failed:', error);
+      Garden(UserID, token);
     });
-  // Garden(UserID);
+  // Garden(UserID, token);
 }
 
-const DisplayAllGardens = (UserID) => {
-  axios.get("http://localhost:3000/GreenThumb/api/v1/gardens-list").then(response => {
+const DisplayAllGardens = (UserID, token) => {
+  axios.get("http://localhost:3000/GreenThumb/api/v1/gardens-list", {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
     console.log(response.data);
-    Garden(UserID);
+    Garden(UserID, token);
   }).catch(error => {
-
+    console.log("Error",error);
+    Garden(UserID, token);
   })
 }
 
-const DisplayGardenById = (UserID) => {
+const DisplayGardenById = (UserID, token) => {
   inquirer.prompt(
     [
       {
@@ -836,21 +926,26 @@ const DisplayGardenById = (UserID) => {
       },
     ]
   ).then(answers => {
-    axios.get(`http://localhost:3000/GreenThumb/api/v1/garden-list/${answers.GardenID}`).then(response => {
+    axios.get(`http://localhost:3000/GreenThumb/api/v1/garden-list/${answers.GardenID}`, {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
       console.log(response.data);
-      Garden(UserID);
+      Garden(UserID, token);
     }).catch(error => {
-      console.error('Error message:', error);
+      console.log("Error",error);
+    Garden(UserID, token);
     })
   }).catch((error) => {
     console.error('Failed to get garden via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    Garden(UserID);
+    Garden(UserID, token);
   })
 
 }
 
-const DisplayGardensByName = (UserID) => {
+const DisplayGardensByName = (UserID, token) => {
   inquirer.prompt(
     [
       {
@@ -867,20 +962,25 @@ const DisplayGardensByName = (UserID) => {
       },
     ]
   ).then(answers => {
-    axios.get(`http://localhost:3000/GreenThumb/api/v1/garden-list-by-name/${answers.GardenName}`).then(response => {
+    axios.get(`http://localhost:3000/GreenThumb/api/v1/garden-list-by-name/${answers.GardenName}`, {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
       console.log(response.data);
-      Garden(UserID);
+      Garden(UserID, token);
     }).catch(error => {
-      console.error('Error message:', error);
+      console.log("Error",error);
+    Garden(UserID, token);
     })
   }).catch((error) => {
     console.error('Failed to get garden via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    Garden(UserID);
+    Garden(UserID, token);
   })
 }
 
-const DisplayGardensByLocations = (UserID) => {
+const DisplayGardensByLocations = (UserID, token) => {
   inquirer.prompt(
     [
       {
@@ -897,20 +997,25 @@ const DisplayGardensByLocations = (UserID) => {
       },
     ]
   ).then(answers => {
-    axios.get(`http://localhost:3000/GreenThumb/api/v1/garden-list-by-location/${answers.GardenLocation}`).then(response => {
+    axios.get(`http://localhost:3000/GreenThumb/api/v1/garden-list-by-location/${answers.GardenLocation}`, {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
       console.log(response.data);
-      Garden(UserID);
+      Garden(UserID, token);
     }).catch(error => {
-      console.error('Error message:', error);
+      console.log("Error",error);
+    Garden(UserID, token);
     })
   }).catch((error) => {
     console.error('Failed to get garden via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    Garden(UserID);
+    Garden(UserID, token);
   })
 }
 
-const UpdateGardenData = (UserID) => {
+const UpdateGardenData = (UserID, token) => {
   inquirer.prompt(
     [
       {
@@ -971,7 +1076,11 @@ const UpdateGardenData = (UserID) => {
         Name: answers1.name,
         Location: answers1.location,
         Description: answers1.description
-      }).then(response => {
+      }, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    }).then(response => {
         console.log({
           GardenID: answers.GardenID,
           Name: answers1.name,
@@ -979,23 +1088,25 @@ const UpdateGardenData = (UserID) => {
           Description: answers1.description
         });
 
-        Garden(UserID);
+        Garden(UserID, token);
       }).catch(error => {
-        console.error('Error message:', error);
+        console.log("Error",error);
+    Garden(UserID, token);
       })
     }).catch(error => {
-
+      console.log("Error",error);
+    Garden(UserID, token);
     })
 
 
   }).catch((error) => {
     console.error('Failed to get garden via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    Garden(UserID);
+    Garden(UserID, token);
   })
 }
 
-const DeleteASpecificGarden = (UserID) => {
+const DeleteASpecificGarden = (UserID, token) => {
   inquirer.prompt(
     [
       {
@@ -1012,16 +1123,21 @@ const DeleteASpecificGarden = (UserID) => {
       },
     ]
   ).then(answers => {
-    axios.delete(`http://localhost:3000/GreenThumb/api/v1/specific-garden-from-list/${answers.GardenID}`).then(response => {
+    axios.delete(`http://localhost:3000/GreenThumb/api/v1/specific-garden-from-list/${answers.GardenID}`, {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
       console.log(response.data);
-      Garden(UserID);
+      Garden(UserID, token);
     }).catch(error => {
-      console.error('Error message:', error);
+      console.log("Error",error);
+    Garden(UserID, token);
     })
   }).catch((error) => {
     console.error('Failed to get garden via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    Garden(UserID);
+    Garden(UserID, token);
   })
 }
 
@@ -1030,7 +1146,7 @@ const DeleteASpecificGarden = (UserID) => {
 // Guide functions
 /* ***************** */
 
-const AddGuide = (UserID) => {
+const AddGuide = (UserID, token) => {
   inquirer
     .prompt([
       {
@@ -1084,7 +1200,11 @@ const AddGuide = (UserID) => {
     ])
     .then(answers => {
       console.log('Enter guide data');
-      axios.get("http://localhost:3000/GreenThumb/api/v1/guide-list").then(response1 => {
+      axios.get("http://localhost:3000/GreenThumb/api/v1/guide-list", {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    }).then(response1 => {
         // Define the URL to which you want to send the POST request
         const url = 'http://localhost:3000/GreenThumb/api/v1/new-guide';
         // Data to be sent in the POST request
@@ -1096,63 +1216,84 @@ const AddGuide = (UserID) => {
           Rate: answers.rate
         };
 
-        axios.post(url, postData)
+        axios.post(url, postData, {
+          headers: {
+              'Authorization': `Bearer ${token}`
+          }
+      })
           .then(response2 => {
             // Handle success
 
-            axios.get("http://localhost:3000/GreenThumb/api/v1/comments-list").then(response3 => {
+            axios.get("http://localhost:3000/GreenThumb/api/v1/comments-list", {
+              headers: {
+                  'Authorization': `Bearer ${token}`
+              }
+          }).then(response3 => {
               axios.post('http://localhost:3000/GreenThumb/api/v1/add-comment', {
                 CommentID: response3.data.length + 1,
                 GuideID: response1.data.length + 1,
                 Comment: answers.comment
-              })
+              }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
                 .then(response4 => {
                   // Handle success
-                  Guide(UserID);
+                  Guide(UserID, token);
                   // mainMenu(response.data.user.UserID);
 
 
                 })
                 .catch(error => {
                   // Handle error
-                  console.error('Error:', error);
+                  console.log("Error",error);
+    Guide(UserID, token);
                 });
             }).catch(error => {
-              console.error('Error:', error);
+              console.log("Error",error);
+    Guide(UserID, token);
             })
 
 
             /////////////////////
 
           }).catch(error => {
-            console.error('Error:', error);
+            console.log("Error",error);
+    Guide(UserID, token);
           })
 
 
 
       })
         .catch(error => {
-          // Handle error
-          console.error('Error:', error);
+          console.log("Error",error);
+    Guide(UserID, token);
         });
 
     })
     .catch((error) => {
-      console.error('Login failed:', error);
+      console.log("Error",error);
+    Guide(UserID, token);
     });
-  // Garden(UserID);
+  // Garden(UserID, token);
 }
 
-const DisplayAllGuides = (UserID) => {
-  axios.get("http://localhost:3000/GreenThumb/api/v1/guide-list").then(response => {
+const DisplayAllGuides = (UserID, token) => {
+  axios.get("http://localhost:3000/GreenThumb/api/v1/guide-list", {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
     console.log(response.data);
-    Guide(UserID);
+    Guide(UserID, token);
   }).catch(error => {
-
+    console.log("Error",error);
+    Guide(UserID, token);
   })
 }
 
-const DisplayGuideById = (UserID) => {
+const DisplayGuideById = (UserID, token) => {
   inquirer.prompt(
     [
       {
@@ -1169,21 +1310,26 @@ const DisplayGuideById = (UserID) => {
       },
     ]
   ).then(answers => {
-    axios.get(`http://localhost:3000/GreenThumb/api/v1/guide/${answers.GuideID}`).then(response => {
+    axios.get(`http://localhost:3000/GreenThumb/api/v1/guide/${answers.GuideID}`, {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
       console.log(response.data);
-      Guide(UserID);
+      Guide(UserID, token);
     }).catch(error => {
-      console.error('Error message:', error);
+      console.log("Error",error);
+    Guide(UserID, token);
     })
   }).catch((error) => {
     console.error('Failed to get guide via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    Guide(UserID);
+    Guide(UserID, token);
   })
 
 }
 
-const DisplayGuidesByTitle = (UserID) => {
+const DisplayGuidesByTitle = (UserID, token) => {
   inquirer.prompt(
     [
       {
@@ -1200,20 +1346,25 @@ const DisplayGuidesByTitle = (UserID) => {
       },
     ]
   ).then(answers => {
-    axios.get(`http://localhost:3000/GreenThumb/api/v1/guide-list-by-title/${answers.GuideTitle}`).then(response => {
+    axios.get(`http://localhost:3000/GreenThumb/api/v1/guide-list-by-title/${answers.GuideTitle}`, {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
       console.log(response.data);
-      Guide(UserID);
+      Guide(UserID, token);
     }).catch(error => {
-      console.error('Error message:', error);
+      console.log("Error",error);
+    Guide(UserID, token);
     })
   }).catch((error) => {
     console.error('Failed to get guide via title:', error);
     // Optionally, you can return to the main menu even in case of an error
-    Guide(UserID);
+    Guide(UserID, token);
   })
 }
 
-const UpdateGuideData = (UserID) => {
+const UpdateGuideData = (UserID, token) => {
   inquirer.prompt(
     [
       {
@@ -1275,7 +1426,11 @@ const UpdateGuideData = (UserID) => {
         Title: answers1.title,
         Content: answers1.content,
         Rate: answers1.rate
-      }).then(response => {
+      }, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    }).then(response => {
         console.log({
           GuideID: answers.GuideID,
           Title: answers1.title,
@@ -1283,23 +1438,25 @@ const UpdateGuideData = (UserID) => {
           Rate: answers1.rate
         });
 
-        Guide(UserID);
+        Guide(UserID, token);
       }).catch(error => {
-        console.error('Error message:', error);
+        console.log("Error",error);
+    Guide(UserID, token);
       })
     }).catch(error => {
-
+      console.log("Error",error);
+    Guide(UserID, token);
     })
 
 
   }).catch((error) => {
     console.error('Failed to get guide via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    Guide(UserID);
+    Guide(UserID, token);
   })
 }
 
-const DeleteASpecificGuide = (UserID) => {
+const DeleteASpecificGuide = (UserID, token) => {
   inquirer.prompt(
     [
       {
@@ -1316,16 +1473,21 @@ const DeleteASpecificGuide = (UserID) => {
       },
     ]
   ).then(answers => {
-    axios.delete(`http://localhost:3000/GreenThumb/api/v1/specific-guide-from-list/${answers.GuideID}`).then(response => {
+    axios.delete(`http://localhost:3000/GreenThumb/api/v1/specific-guide-from-list/${answers.GuideID}`, {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
       console.log(response.data);
-      Guide(UserID);
+      Guide(UserID, token);
     }).catch(error => {
-      console.error('Error message:', error);
+      console.log("Error",error);
+    Guide(UserID, token);
     })
   }).catch((error) => {
     console.error('Failed to get guide via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    Guide(UserID);
+    Guide(UserID, token);
   })
 }
 
@@ -1335,7 +1497,7 @@ const DeleteASpecificGuide = (UserID) => {
 // Event functions
 /* ***************** */
 
-const AddEvent = (UserID, GardenID) => {
+const AddEvent = (UserID, GardenID, token) => {
   inquirer
     .prompt([
       {
@@ -1367,7 +1529,11 @@ const AddEvent = (UserID, GardenID) => {
     ])
     .then(answers => {
       console.log('Enter guide data');
-      axios.get("http://localhost:3000/GreenThumb/api/v1/events-list").then(response1 => {
+      axios.get("http://localhost:3000/GreenThumb/api/v1/events-list", {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    }).then(response1 => {
         // Define the URL to which you want to send the POST request
         const url = 'http://localhost:3000/GreenThumb/api/v1/new-event';
         // Data to be sent in the POST request
@@ -1378,7 +1544,11 @@ const AddEvent = (UserID, GardenID) => {
           Description: answers.description
         };
 
-        axios.post(url, postData)
+        axios.post(url, postData, {
+          headers: {
+              'Authorization': `Bearer ${token}`
+          }
+      })
           .then(response2 => {
             // Handle success
             console.log({
@@ -1388,11 +1558,11 @@ const AddEvent = (UserID, GardenID) => {
               Description: answers.description
             });
             /////////////////////
-            Event(UserID);
+            Event(UserID, token);
 
           }).catch(error => {
             console.error('Error:', error);
-            Event(UserID);
+            Event(UserID, token);
           })
 
 
@@ -1400,27 +1570,31 @@ const AddEvent = (UserID, GardenID) => {
       })
         .catch(error => {
           // Handle error
-          console.error('Error:', error);
-          Garden(UserID);
+          console.log("Error",error);
+          Event(UserID, token);
         });
 
     })
     .catch((error) => {
-      console.error('Login failed:', error);
-      Garden(UserID);
+      console.log("Error",error);
+          Event(UserID, token);
     });
 }
 
-const DisplayAllEvents = (UserID, GardenID) => {
-  axios.get("http://localhost:3000/GreenThumb/api/v1/events-list").then(response => {
+const DisplayAllEvents = (UserID, GardenID, token) => {
+  axios.get("http://localhost:3000/GreenThumb/api/v1/events-list", {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
     console.log(response.data);
-    Event(UserID);
+    Event(UserID, token);
   }).catch(error => {
 
   })
 }
 
-const DisplayEventById = (UserID, GardenID) => {
+const DisplayEventById = (UserID, GardenID, token) => {
   inquirer.prompt(
     [
       {
@@ -1437,22 +1611,27 @@ const DisplayEventById = (UserID, GardenID) => {
       },
     ]
   ).then(answers => {
-    axios.get(`http://localhost:3000/GreenThumb/api/v1/event/${answers.EventID}`).then(response => {
+    axios.get(`http://localhost:3000/GreenThumb/api/v1/event/${answers.EventID}`, {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
       console.log(response.data);
-      Event(UserID);
+      Event(UserID, token);
     }).catch(error => {
-      console.error('Error message:', error);
+      console.log("Error",error);
+          Event(UserID, token);
     })
   }).catch((error) => {
     console.error('Failed to get guide via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    Event(UserID);
+    Event(UserID, token);
   })
 
 }
 
 
-const DisplayEventsByGardenId = (UserID, GardenID) => {
+const DisplayEventsByGardenId = (UserID, GardenID, token) => {
   inquirer.prompt(
     [
       {
@@ -1469,21 +1648,26 @@ const DisplayEventsByGardenId = (UserID, GardenID) => {
       },
     ]
   ).then(answers => {
-    axios.get(`http://localhost:3000/GreenThumb/api/v1/events-list-by-garden/${answers.GardenID}`).then(response => {
+    axios.get(`http://localhost:3000/GreenThumb/api/v1/events-list-by-garden/${answers.GardenID}`, {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
       console.log(response.data);
-      Event(UserID);
+      Event(UserID, token);
     }).catch(error => {
-      console.error('Error message:', error);
+      console.log("Error",error);
+          Event(UserID, token);
     })
   }).catch((error) => {
     console.error('Failed to get guide via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    Event(UserID);
+    Event(UserID, token);
   })
 
 }
 
-const UpdateEventData = (UserID, GardenID) => {
+const UpdateEventData = (UserID, GardenID, token) => {
   inquirer.prompt(
     [
       {
@@ -1534,30 +1718,36 @@ const UpdateEventData = (UserID, GardenID) => {
         GardenID: GardenID,
         Date: answers1.date,
         Description: answers1.description
-      }).then(response => {
+      }, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    }).then(response => {
         console.log({
           GardenID: GardenID,
           Date: answers1.date,
           Description: answers1.description
         });
 
-        Event(UserID);
+        Event(UserID, token);
       }).catch(error => {
-        console.error('Error message:', error);
+        console.log("Error",error);
+          Event(UserID, token);
       })
     }).catch(error => {
-
+      console.log("Error",error);
+          Event(UserID, token);
     })
 
 
   }).catch((error) => {
     console.error('Failed to get Event via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    Event(UserID);
+    Event(UserID, token);
   })
 }
 
-const DeleteASpecificEvent = (UserID, GardenID) => {
+const DeleteASpecificEvent = (UserID, GardenID, token) => {
   inquirer.prompt(
     [
       {
@@ -1574,16 +1764,21 @@ const DeleteASpecificEvent = (UserID, GardenID) => {
       },
     ]
   ).then(answers => {
-    axios.delete(`http://localhost:3000/GreenThumb/api/v1/event/${answers.EventID}`).then(response => {
+    axios.delete(`http://localhost:3000/GreenThumb/api/v1/event/${answers.EventID}`, {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
       console.log(response.data);
-      Event(UserID);
+      Event(UserID, token);
     }).catch(error => {
-      console.error('Error message:', error);
+      console.log("Error",error);
+          Event(UserID, token);
     })
   }).catch((error) => {
     console.error('Failed to get Event via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    Event(UserID);
+    Event(UserID, token);
   })
 }
 
@@ -1593,7 +1788,7 @@ const DeleteASpecificEvent = (UserID, GardenID) => {
 // Activity functions
 /* ***************** */
 
-const AddPlantingActivity = (UserID, PlotID) => {
+const AddPlantingActivity = (UserID, PlotID, token) => {
   inquirer
     .prompt([
 
@@ -1627,7 +1822,11 @@ const AddPlantingActivity = (UserID, PlotID) => {
     ])
     .then(answers => {
       console.log('Enter plot data');
-      axios.get("http://localhost:3000/GreenThumb/api/v1/activities-list").then(response1 => {
+      axios.get("http://localhost:3000/GreenThumb/api/v1/activities-list", {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    }).then(response1 => {
         // Define the URL to which you want to send the POST request
         const url = 'http://localhost:3000/GreenThumb/api/v1/new-activity';
         // Data to be sent in the POST request
@@ -1640,7 +1839,11 @@ const AddPlantingActivity = (UserID, PlotID) => {
 
         };
 
-        axios.post(url, postData)
+        axios.post(url, postData, {
+          headers: {
+              'Authorization': `Bearer ${token}`
+          }
+      })
           .then(response2 => {
             // Handle success
             console.log({
@@ -1651,11 +1854,11 @@ const AddPlantingActivity = (UserID, PlotID) => {
               HarvestDate: answers.HarvestDate
             });
             /////////////////////
-            Planting_Activity(UserID, PlotID);
+            Planting_Activity(UserID, PlotID, token);
 
           }).catch(error => {
             console.error('Error:', error);
-            Planting_Activity(UserID, PlotID);
+            Planting_Activity(UserID, PlotID, token);
 
           })
 
@@ -1664,27 +1867,31 @@ const AddPlantingActivity = (UserID, PlotID) => {
       })
         .catch(error => {
           // Handle error
-          console.error('Error:', error);
-          Plot(UserID);
+          console.log("Error",error);
+          Planting_Activity(UserID, PlotID, token);
         });
 
     })
     .catch((error) => {
-      console.error('Login failed:', error);
-      Plot(UserID);
+      console.log("Error",error);
+          Planting_Activity(UserID, PlotID, token);
     });
 }
 
-const DisplayAllActivities = (UserID, PlotID) => {
-  axios.get("http://localhost:3000/GreenThumb/api/v1/activities-list").then(response => {
+const DisplayAllActivities = (UserID, PlotID, token) => {
+  axios.get("http://localhost:3000/GreenThumb/api/v1/activities-list", {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
     console.log(response.data);
-    Planting_Activity(UserID, PlotID);
+    Planting_Activity(UserID, PlotID, token);
   }).catch(error => {
-
+    Planting_Activity(UserID, PlotID, token);
   })
 }
 
-const DisplayActivityById = (UserID, PlotID) => {
+const DisplayActivityById = (UserID, PlotID, token) => {
   inquirer.prompt(
     [
       {
@@ -1701,22 +1908,27 @@ const DisplayActivityById = (UserID, PlotID) => {
       },
     ]
   ).then(answers => {
-    axios.get(`http://localhost:3000/GreenThumb/api/v1/activity/${answers.ActivityID}`).then(response => {
+    axios.get(`http://localhost:3000/GreenThumb/api/v1/activity/${answers.ActivityID}`, {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
       console.log(response.data);
-      Planting_Activity(UserID, PlotID);
+      Planting_Activity(UserID, PlotID, token);
     }).catch(error => {
-      console.error('Error message:', error);
+      console.log("Error",error);
+          Planting_Activity(UserID, PlotID, token);
     })
   }).catch((error) => {
     console.error('Failed to get activity via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    Planting_Activity(UserID, PlotID);
+    Planting_Activity(UserID, PlotID, token);
   })
 
 }
 
 
-const DisplayActivitiesByUserId = (UserID, PlotID) => {
+const DisplayActivitiesByUserId = (UserID, PlotID, token) => {
   inquirer.prompt(
     [
       {
@@ -1733,21 +1945,26 @@ const DisplayActivitiesByUserId = (UserID, PlotID) => {
       },
     ]
   ).then(answers => {
-    axios.get(`http://localhost:3000/GreenThumb/api/v1/activities-list-by-user/${answers.UserID}`).then(response => {
+    axios.get(`http://localhost:3000/GreenThumb/api/v1/activities-list-by-user/${answers.UserID}`, {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
       console.log(response.data);
-      Planting_Activity(UserID, PlotID);
+      Planting_Activity(UserID, PlotID, token);
     }).catch(error => {
-      console.error('Error message:', error);
+      console.log("Error",error);
+      Planting_Activity(UserID, PlotID, token);
     })
   }).catch((error) => {
     console.error('Failed to get plot via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    Planting_Activity(UserID, PlotID);
+    Planting_Activity(UserID, PlotID, token);
   })
 
 }
 
-const DisplayActivitiesByPlotId = (UserID, PlotID) => {
+const DisplayActivitiesByPlotId = (UserID, PlotID, token) => {
   inquirer.prompt(
     [
       {
@@ -1764,21 +1981,26 @@ const DisplayActivitiesByPlotId = (UserID, PlotID) => {
       },
     ]
   ).then(answers => {
-    axios.get(`http://localhost:3000/GreenThumb/api/v1/activities-list-by-plot/${answers.PlotID}`).then(response => {
+    axios.get(`http://localhost:3000/GreenThumb/api/v1/activities-list-by-plot/${answers.PlotID}`, {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
       console.log(response.data);
-      Planting_Activity(UserID, PlotID);
+      Planting_Activity(UserID, PlotID, token);
     }).catch(error => {
-      console.error('Error message:', error);
+      console.log("Error",error);
+          Planting_Activity(UserID, PlotID, token);
     })
   }).catch((error) => {
     console.error('Failed to get plot via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    Planting_Activity(UserID, PlotID);
+    Planting_Activity(UserID, PlotID, token);
   })
 
 }
 
-const UpdateActivityData = (UserID, PlotID) => {
+const UpdateActivityData = (UserID, PlotID, token) => {
   inquirer.prompt(
     [
       {
@@ -1829,30 +2051,36 @@ const UpdateActivityData = (UserID, PlotID) => {
       axios.patch(`http://localhost:3000/GreenThumb/api/v1/activity/${answers.ActivityID}`, {
         PlantDate: answers1.PlantDate,
         HarvestDate: answers1.HarvestDate
-      }).then(response => {
+      }, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    }).then(response => {
         console.log({
           PlantDate: answers1.PlantDate,
           HarvestDate: answers1.HarvestDate
         });
 
-        Planting_Activity(UserID, PlotID);
+        Planting_Activity(UserID, PlotID, token);
       }).catch(error => {
-        console.error('Error message:', error);
+        console.log("Error",error);
+          Planting_Activity(UserID, PlotID, token);
       })
     }).catch(error => {
-
+      console.log("Error",error);
+          Planting_Activity(UserID, PlotID, token);
     })
 
 
   }).catch((error) => {
     console.error('Failed to get activity via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    Planting_Activity(UserID, PlotID);
+    Planting_Activity(UserID, PlotID, token);
 
   })
 }
 
-const EnterToPlantWindow = (UserID, PlotID) => {
+const EnterToPlantWindow = (UserID, PlotID, token) => {
   inquirer
     .prompt({
       type: 'list',
@@ -1871,35 +2099,38 @@ const EnterToPlantWindow = (UserID, PlotID) => {
     .then((answers) => {
       switch (answers.action) {
         case 'Add Plant':
-          SelectActivity(UserID);
+          SelectActivity(UserID, PlotID, token);
           break;
         case 'Display All Plants':
-          DisplayAllPlants(UserID);
+          DisplayAllPlants(UserID, PlotID, token);
           break;
         case 'Display Plant by id':
-          DisplayPlantById(UserID);
+          DisplayPlantById(UserID, PlotID, token);
           break;
         case 'Display Plants by name':
-          DisplayPlantsByName(UserID);
+          DisplayPlantsByName(UserID, PlotID, token);
           break;
 
         case 'Update Plant data':
-          UpdatePlantData(UserID);
+          UpdatePlantData(UserID, PlotID, token);
           break;
         case 'Delete a specific Plant':
-          DeleteASpecificPlant(UserID);
+          DeleteASpecificPlant(UserID, PlotID, token);
           break;
         case 'Go Back':
-          Planting_Activity(UserID, PlotID);
+          Planting_Activity(UserID, PlotID, token);
           break;
-        default:
+        default:{
           console.log('Invalid choice');
+          EnterToPlantWindow (UserID, PlotID, token);
+        }
+          
       }
     });
 }
 
 
-const DeleteASpecificActivity = (UserID, PlotID) => {
+const DeleteASpecificActivity = (UserID, PlotID, token) => {
   inquirer.prompt(
     [
       {
@@ -1916,16 +2147,21 @@ const DeleteASpecificActivity = (UserID, PlotID) => {
       },
     ]
   ).then(answers => {
-    axios.delete(`http://localhost:3000/GreenThumb/api/v1/activity/${answers.ActivityID}`).then(response => {
+    axios.delete(`http://localhost:3000/GreenThumb/api/v1/activity/${answers.ActivityID}`, {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
       console.log(response.data);
-      Planting_Activity(UserID, PlotID);
+      Planting_Activity(UserID, PlotID, token);
     }).catch(error => {
       console.error('Error message:', error);
+      Planting_Activity(UserID, PlotID, token);
     })
   }).catch((error) => {
     console.error('Failed to get Activity via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    Planting_Activity(UserID, PlotID);
+    Planting_Activity(UserID, PlotID, token);
 
   })
 }
@@ -1937,7 +2173,7 @@ const DeleteASpecificActivity = (UserID, PlotID) => {
 // Plot functions
 /* ***************** */
 
-const AddPlot = (UserID, GardenID) => {
+const AddPlot = (UserID, GardenID, token) => {
   inquirer
     .prompt([
       {
@@ -1992,7 +2228,11 @@ const AddPlot = (UserID, GardenID) => {
     ])
     .then(answers => {
       console.log('Enter plot data');
-      axios.get("http://localhost:3000/GreenThumb/api/v1/plots-list").then(response1 => {
+      axios.get("http://localhost:3000/GreenThumb/api/v1/plots-list", {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    }).then(response1 => {
         // Define the URL to which you want to send the POST request
         const url = 'http://localhost:3000/GreenThumb/api/v1/new-plot';
         // Data to be sent in the POST request
@@ -2006,7 +2246,11 @@ const AddPlot = (UserID, GardenID) => {
 
         };
 
-        axios.post(url, postData)
+        axios.post(url, postData, {
+          headers: {
+              'Authorization': `Bearer ${token}`
+          }
+      })
           .then(response2 => {
             // Handle success
             console.log({
@@ -2018,11 +2262,11 @@ const AddPlot = (UserID, GardenID) => {
               Available: answers.Available
             });
             /////////////////////
-            Plot(UserID);
+            Plot(UserID, token);
 
           }).catch(error => {
             console.error('Error:', error);
-            Plot(UserID);
+            Plot(UserID, token);
           })
 
 
@@ -2031,26 +2275,30 @@ const AddPlot = (UserID, GardenID) => {
         .catch(error => {
           // Handle error
           console.error('Error:', error);
-          Garden(UserID);
+            Plot(UserID, token);
         });
 
     })
     .catch((error) => {
-      console.error('Login failed:', error);
-      Garden(UserID);
+      console.error('Error:', error);
+            Plot(UserID, token);
     });
 }
 
-const DisplayAllPlots = (UserID, GardenID) => {
-  axios.get("http://localhost:3000/GreenThumb/api/v1/plots-list").then(response => {
+const DisplayAllPlots = (UserID, GardenID, token) => {
+  axios.get("http://localhost:3000/GreenThumb/api/v1/plots-list", {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
     console.log(response.data);
-    Plot(UserID);
+    Plot(UserID, token);
   }).catch(error => {
 
   })
 }
 
-const DisplayPlotById = (UserID, GardenID) => {
+const DisplayPlotById = (UserID, GardenID, token) => {
   inquirer.prompt(
     [
       {
@@ -2067,22 +2315,27 @@ const DisplayPlotById = (UserID, GardenID) => {
       },
     ]
   ).then(answers => {
-    axios.get(`http://localhost:3000/GreenThumb/api/v1/plot/${answers.PlotID}`).then(response => {
+    axios.get(`http://localhost:3000/GreenThumb/api/v1/plot/${answers.PlotID}`, {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
       console.log(response.data);
-      Plot(UserID);
+      Plot(UserID, token);
     }).catch(error => {
-      console.error('Error message:', error);
+      console.error('Error:', error);
+            Plot(UserID, token);
     })
   }).catch((error) => {
     console.error('Failed to get plot via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    Plot(UserID);
+    Plot(UserID, token);
   })
 
 }
 
 
-const DisplayPlotsByGardenId = (UserID, GardenID) => {
+const DisplayPlotsByGardenId = (UserID, GardenID, token) => {
   inquirer.prompt(
     [
       {
@@ -2099,21 +2352,26 @@ const DisplayPlotsByGardenId = (UserID, GardenID) => {
       },
     ]
   ).then(answers => {
-    axios.get(`http://localhost:3000/GreenThumb/api/v1/plots-list-by-garden/${answers.GardenID}`).then(response => {
+    axios.get(`http://localhost:3000/GreenThumb/api/v1/plots-list-by-garden/${answers.GardenID}`, {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
       console.log(response.data);
-      Plot(UserID);
+      Plot(UserID, token);
     }).catch(error => {
-      console.error('Error message:', error);
+      console.error('Error:', error);
+            Plot(UserID, token);
     })
   }).catch((error) => {
     console.error('Failed to get plot via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    Plot(UserID);
+    Plot(UserID, token);
   })
 
 }
 
-const UpdatePlotData = (UserID, GardenID) => {
+const UpdatePlotData = (UserID, GardenID, token) => {
   inquirer.prompt(
     [
       {
@@ -2190,7 +2448,11 @@ const UpdatePlotData = (UserID, GardenID) => {
         SunLight: answers1.SunLight,
         SoilType: answers1.SoilType,
         Available: answers1.Available
-      }).then(response => {
+      }, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    }).then(response => {
         console.log({
           GardenID: GardenID,
           PlotSize: answers1.PlotSize,
@@ -2199,23 +2461,25 @@ const UpdatePlotData = (UserID, GardenID) => {
           Available: answers1.Available
         });
 
-        Plot(UserID);
+        Plot(UserID, token);
       }).catch(error => {
-        console.error('Error message:', error);
+        console.error('Error:', error);
+            Plot(UserID, token);
       })
     }).catch(error => {
-
+      console.error('Error:', error);
+            Plot(UserID, token);
     })
 
 
   }).catch((error) => {
     console.error('Failed to get Plot via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    Plot(UserID);
+    Plot(UserID, token);
   })
 }
 
-const DeleteASpecificPlot = (UserID, GardenID) => {
+const DeleteASpecificPlot = (UserID, GardenID, token) => {
   inquirer.prompt(
     [
       {
@@ -2232,16 +2496,21 @@ const DeleteASpecificPlot = (UserID, GardenID) => {
       },
     ]
   ).then(answers => {
-    axios.delete(`http://localhost:3000/GreenThumb/api/v1/plot/${answers.PlotID}`).then(response => {
+    axios.delete(`http://localhost:3000/GreenThumb/api/v1/plot/${answers.PlotID}`, {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
       console.log(response.data);
-      Plot(UserID);
+      Plot(UserID, token);
     }).catch(error => {
-      console.error('Error message:', error);
+      console.error('Error:', error);
+            Plot(UserID, token);
     })
   }).catch((error) => {
     console.error('Failed to get Plot via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    Plot(UserID);
+    Plot(UserID, token);
   })
 }
 
@@ -2251,7 +2520,7 @@ const DeleteASpecificPlot = (UserID, GardenID) => {
 
 // Exchange functions
 /* ***************** */
-const AddExchange = (UserID) => {
+const AddExchange = (UserID, token) => {
   inquirer
     .prompt([
       {
@@ -2284,7 +2553,11 @@ const AddExchange = (UserID) => {
     .then(answers => {
       console.log('Enter exchange data');
       console.log(answers)
-      axios.get("http://localhost:3000/GreenThumb/api/v1/exchanges-list").then(response1 => {
+      axios.get("http://localhost:3000/GreenThumb/api/v1/exchanges-list", {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    }).then(response1 => {
         // Define the URL to which you want to send the POST request
         const url = 'http://localhost:3000/GreenThumb/api/v1/new-exchange';
         console.log(response1.data.length + 1);
@@ -2296,18 +2569,22 @@ const AddExchange = (UserID) => {
           Status: answers.Status
         };
 
-        axios.post(url, postData)
+        axios.post(url, postData, {
+          headers: {
+              'Authorization': `Bearer ${token}`
+          }
+      })
           .then(response2 => {
             // Handle success
             console.log(postData);
-            Exchange(UserID);
+            Exchange(UserID, token);
 
 
             /////////////////////
 
           }).catch(error => {
             console.error('Error:', error);
-            Exchange(UserID);
+            Exchange(UserID, token);
           })
 
 
@@ -2316,26 +2593,32 @@ const AddExchange = (UserID) => {
         .catch(error => {
           // Handle error
           console.error('Error:', error);
-          Exchange(UserID);
+          Exchange(UserID, token);
         });
 
     })
     .catch((error) => {
-      console.error('Login failed:', error);
+      console.error('Error:', error);
+          Exchange(UserID, token);
     });
-  // Garden(UserID);
+  // Garden(UserID, token);
 }
 
-const DisplayAllExchanges = (UserID) => {
-  axios.get("http://localhost:3000/GreenThumb/api/v1/exchanges-list").then(response => {
+const DisplayAllExchanges = (UserID, token) => {
+  axios.get("http://localhost:3000/GreenThumb/api/v1/exchanges-list", {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
     console.log(response.data);
-    Exchange(UserID);
+    Exchange(UserID, token);
   }).catch(error => {
-
+    console.error('Error:', error);
+          Exchange(UserID, token);
   })
 }
 
-const DisplayExchangeById = (UserID) => {
+const DisplayExchangeById = (UserID, token) => {
   inquirer.prompt(
     [
       {
@@ -2352,22 +2635,26 @@ const DisplayExchangeById = (UserID) => {
       },
     ]
   ).then(answers => {
-    axios.get(`http://localhost:3000/GreenThumb/api/v1/exchange/${answers.ExchangeID}`).then(response => {
+    axios.get(`http://localhost:3000/GreenThumb/api/v1/exchange/${answers.ExchangeID}`, {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
       console.log(response.data);
-      Exchange(UserID);
+      Exchange(UserID, token);
     }).catch(error => {
       console.error('Error message:', error);
-      Exchange(UserID);
+      Exchange(UserID, token);
     })
   }).catch((error) => {
     console.error('Failed to get garden via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    Exchange(UserID);
+    Exchange(UserID, token);
   })
 
 }
 
-const DisplayExchangesByOfferUserId = (UserID) => {
+const DisplayExchangesByOfferUserId = (UserID, token) => {
   inquirer.prompt(
     [
       {
@@ -2384,21 +2671,25 @@ const DisplayExchangesByOfferUserId = (UserID) => {
       },
     ]
   ).then(answers => {
-    axios.get(`http://localhost:3000/GreenThumb/api/v1/exchanges-list-by-offer-user/${answers.OfferUserID}`).then(response => {
+    axios.get(`http://localhost:3000/GreenThumb/api/v1/exchanges-list-by-offer-user/${answers.OfferUserID}`, {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
       console.log(response.data);
-      Exchange(UserID);
+      Exchange(UserID, token);
     }).catch(error => {
       console.error('Error message:', error);
-      Exchange(UserID);
+      Exchange(UserID, token);
     })
   }).catch((error) => {
     console.error('Failed to get garden via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    Exchange(UserID);
+    Exchange(UserID, token);
   })
 }
 
-const DisplayExchangesByRequestorUserId = (UserID) => {
+const DisplayExchangesByRequestorUserId = (UserID, token) => {
   inquirer.prompt(
     [
       {
@@ -2415,23 +2706,27 @@ const DisplayExchangesByRequestorUserId = (UserID) => {
       },
     ]
   ).then(answers => {
-    axios.get(`http://localhost:3000/GreenThumb/api/v1/exchanges-list-by-requestor-user/${answers.RequestorUserID}`).then(response => {
+    axios.get(`http://localhost:3000/GreenThumb/api/v1/exchanges-list-by-requestor-user/${answers.RequestorUserID}`, {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
       console.log(response.data);
-      Exchange(UserID);
+      Exchange(UserID, token);
     }).catch(error => {
       console.error('Error message:', error);
-      Exchange(UserID);
+      Exchange(UserID, token);
 
     })
   }).catch((error) => {
     console.error('Failed to get garden via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    Exchange(UserID);
+    Exchange(UserID, token);
 
   })
 }
 
-const DisplayExchangesByStatus = (UserID) => {
+const DisplayExchangesByStatus = (UserID, token) => {
   inquirer.prompt(
     [
       {
@@ -2448,24 +2743,28 @@ const DisplayExchangesByStatus = (UserID) => {
       },
     ]
   ).then(answers => {
-    axios.get(`http://localhost:3000/GreenThumb/api/v1/exchanges-list-by-status/${answers.status}`).then(response => {
+    axios.get(`http://localhost:3000/GreenThumb/api/v1/exchanges-list-by-status/${answers.status}`, {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
       console.log(response.data);
-      Exchange(UserID);
+      Exchange(UserID, token);
     }).catch(error => {
       console.error('Error message:', error);
-      Exchange(UserID);
+      Exchange(UserID, token);
 
     })
   }).catch((error) => {
     console.error('Failed to get garden via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    Exchange(UserID);
+    Exchange(UserID, token);
 
   })
 }
 
 
-const UpdateExchangeData = (UserID) => {
+const UpdateExchangeData = (UserID, token) => {
   inquirer.prompt(
     [
       {
@@ -2501,32 +2800,37 @@ const UpdateExchangeData = (UserID) => {
     ]).then(answers1 => {
       axios.patch(`http://localhost:3000/GreenThumb/api/v1/exchange/${answers.ExchangeID}`, {
         Status: answers1.status
-      }).then(response => {
+      }, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    }).then(response => {
         console.log({
           GardenID: answers.GardenID,
           Status: answers1.status
         });
 
-        Exchange(UserID);
+        Exchange(UserID, token);
       }).catch(error => {
         console.error('Error message:', error);
-        Exchange(UserID);
+        Exchange(UserID, token);
 
       })
     }).catch(error => {
-
+      console.error('Error:', error);
+          Exchange(UserID, token);
     })
 
 
   }).catch((error) => {
     console.error('Failed to get exchange via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    Exchange(UserID);
+    Exchange(UserID, token);
 
   })
 }
 
-const DeleteASpecificExchange = (UserID) => {
+const DeleteASpecificExchange = (UserID, token) => {
   inquirer.prompt(
     [
       {
@@ -2543,18 +2847,22 @@ const DeleteASpecificExchange = (UserID) => {
       },
     ]
   ).then(answers => {
-    axios.delete(`http://localhost:3000/GreenThumb/api/v1/exchange/${answers.ExchangeID}`).then(response => {
+    axios.delete(`http://localhost:3000/GreenThumb/api/v1/exchange/${answers.ExchangeID}`, {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
       console.log(response.data);
-      Exchange(UserID);
+      Exchange(UserID, token);
     }).catch(error => {
       console.error('Error message:', error);
-      Exchange(UserID);
+      Exchange(UserID, token);
 
     })
   }).catch((error) => {
     console.error('Failed to get exchange via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    Exchange(UserID);
+    Exchange(UserID, token);
 
   })
 }
@@ -2565,9 +2873,13 @@ const DeleteASpecificExchange = (UserID) => {
 // Resource functions
 /* ***************** */
 
-const SelectExchange = async (UserID) => {
+const SelectExchange = async (UserID, token) => {
   try {
-    const response = await axios.get('http://localhost:3000/GreenThumb/api/v1/exchanges-list');
+    const response = await axios.get('http://localhost:3000/GreenThumb/api/v1/exchanges-list', {
+      headers: {
+          'Authorization': `Bearer ${token}`
+      }
+  });
     console.log(response.data);
 
     const answers = await inquirer.prompt({
@@ -2581,16 +2893,18 @@ const SelectExchange = async (UserID) => {
 
     if (selectedExchange) {
       console.log(selectedExchange);
-      AddResource(UserID, selectedExchange.ExchangeID);
+      AddResource(UserID, selectedExchange.ExchangeID, token);
     } else {
       console.error('Selected Exchange not found.');
+      SelectExchange(UserID, token);
     }
   } catch (error) {
-    console.error('Error fetching plots:', error);
+    console.error('Error fetching Exchangess:', error);
+    Exchange(UserID, token);
   }
 }
 
-const AddResource = (UserID, ExchangeID) => {
+const AddResource = (UserID, ExchangeID, token) => {
 
   inquirer
     .prompt([
@@ -2634,7 +2948,11 @@ const AddResource = (UserID, ExchangeID) => {
     .then(answers => {
       console.log('Enter Resource data');
       console.log(answers)
-      axios.get("http://localhost:3000/GreenThumb/api/v1/resources-list").then(response1 => {
+      axios.get("http://localhost:3000/GreenThumb/api/v1/resources-list", {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    }).then(response1 => {
         // Define the URL to which you want to send the POST request
         const url = 'http://localhost:3000/GreenThumb/api/v1/new-resource';
         console.log(response1.data.length + 1);
@@ -2646,21 +2964,33 @@ const AddResource = (UserID, ExchangeID) => {
           AvailableQuantity: answers.availablequantity
         };
 
-        axios.post(url, postData)
+        axios.post(url, postData, {
+          headers: {
+              'Authorization': `Bearer ${token}`
+          }
+      })
           .then(response2 => {
             // Handle success
             console.log('Response2');
 
-            axios.get("http://localhost:3000/GreenThumb/api/v1/exchange-resource-list").then(response3 => { // arrive here ( also edit garden )
+            axios.get("http://localhost:3000/GreenThumb/api/v1/exchange-resource-list", {
+              headers: {
+                  'Authorization': `Bearer ${token}`
+              }
+          }).then(response3 => { // arrive here ( also edit garden )
               axios.post('http://localhost:3000/GreenThumb/api/v1/new-exchange-resource', {
                 Exchange_Resource_ID: response3.data.length + 1,
                 ExchangeID: ExchangeID,
                 ResourceID: response1.data.length + 1
-              })
+              }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
                 .then(response4 => {
                   // Handle success
                   console.log('Response4');
-                  Resources(UserID);
+                  Resources(UserID, token);
                   // mainMenu(response.data.user.UserID);
 
 
@@ -2668,9 +2998,11 @@ const AddResource = (UserID, ExchangeID) => {
                 .catch(error => {
                   // Handle error
                   console.error('Error:', error);
+                  Resources(UserID, token);
                 });
             }).catch(error => {
               console.error('Error:', error);
+                  Resources(UserID, token);
             })
 
 
@@ -2678,6 +3010,7 @@ const AddResource = (UserID, ExchangeID) => {
 
           }).catch(error => {
             console.error('Error:', error);
+                  Resources(UserID, token);
           })
 
 
@@ -2686,25 +3019,32 @@ const AddResource = (UserID, ExchangeID) => {
         .catch(error => {
           // Handle error
           console.error('Error:', error);
+                  Resources(UserID, token);
         });
 
     })
     .catch((error) => {
-      console.error('Login failed:', error);
+      console.error('Error:', error);
+                  Resources(UserID, token);
     });
-  // Garden(UserID);
+  // Garden(UserID, token);
 }
 
-const DisplayAllResources = (UserID) => {
-  axios.get("http://localhost:3000/GreenThumb/api/v1/resources-list").then(response => {
+const DisplayAllResources = (UserID, token) => {
+  axios.get("http://localhost:3000/GreenThumb/api/v1/resources-list", {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
     console.log(response.data);
-    Resources(UserID);
+    Resources(UserID, token);
   }).catch(error => {
-
+    console.error('Error:', error);
+                  Resources(UserID, token);
   })
 }
 
-const DisplayResourceById = (UserID) => {
+const DisplayResourceById = (UserID, token) => {
   inquirer.prompt(
     [
       {
@@ -2721,22 +3061,27 @@ const DisplayResourceById = (UserID) => {
       },
     ]
   ).then(answers => {
-    axios.get(`http://localhost:3000/GreenThumb/api/v1/resource/${answers.ResourceID}`).then(response => {
+    axios.get(`http://localhost:3000/GreenThumb/api/v1/resource/${answers.ResourceID}`, {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
       console.log(response.data);
-      Resources(UserID);
+      Resources(UserID, token);
     }).catch(error => {
-      console.error('Error message:', error);
+      console.error('Error:', error);
+                  Resources(UserID, token);
     })
   }).catch((error) => {
     console.error('Failed to get garden via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    Resources(UserID);
+    Resources(UserID, token);
 
   })
 
 }
 
-const DisplayResourcesByType = (UserID) => {
+const DisplayResourcesByType = (UserID, token) => {
   inquirer.prompt(
     [
       {
@@ -2753,22 +3098,27 @@ const DisplayResourcesByType = (UserID) => {
       },
     ]
   ).then(answers => {
-    axios.get(`http://localhost:3000/GreenThumb/api/v1/resources-list-by-type/${answers.type}`).then(response => {
+    axios.get(`http://localhost:3000/GreenThumb/api/v1/resources-list-by-type/${answers.type}`, {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
       console.log(response.data);
-      Resources(UserID);
+      Resources(UserID, token);
     }).catch(error => {
-      console.error('Error message:', error);
+      console.error('Error:', error);
+                  Resources(UserID, token);
     })
   }).catch((error) => {
     console.error('Failed to get resource via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    Resources(UserID);
+    Resources(UserID, token);
 
   })
 }
 
 
-const UpdateResourceData = (UserID) => {
+const UpdateResourceData = (UserID, token) => {
   inquirer.prompt(
     [
       {
@@ -2826,35 +3176,41 @@ const UpdateResourceData = (UserID) => {
       },
     ]).then(answers1 => {
       axios.patch(`http://localhost:3000/GreenThumb/api/v1/resource/${answers.ResourceID}`, {
-        Type: answers1.Type,
+        Type: answers1.type,
         AvailableQuantity: answers1.availablequantity,
         Description: answers1.description
-      }).then(response => {
+      }, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    }).then(response => {
         console.log({
           ResourceID: answers.ResourceID,
-          Type: answers1.Type,
+          Type: answers1.type,
           AvailableQuantity: answers1.availablequantity,
           Description: answers1.description
         });
 
-        Resources(UserID);
+        Resources(UserID, token);
       }).catch(error => {
-        console.error('Error message:', error);
+        console.error('Error:', error);
+                  Resources(UserID, token);
       })
     }).catch(error => {
-
+      console.error('Error:', error);
+                  Resources(UserID, token);
     })
 
 
   }).catch((error) => {
     console.error('Failed to get resource via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    Resources(UserID);
+    Resources(UserID, token);
 
   })
 }
 
-const DeleteASpecificResource = (UserID) => {
+const DeleteASpecificResource = (UserID, token) => {
   inquirer.prompt(
     [
       {
@@ -2871,16 +3227,21 @@ const DeleteASpecificResource = (UserID) => {
       },
     ]
   ).then(answers => {
-    axios.delete(`http://localhost:3000/GreenThumb/api/v1/resource/${answers.ResourceID}`).then(response => {
+    axios.delete(`http://localhost:3000/GreenThumb/api/v1/resource/${answers.ResourceID}`, {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
       console.log(response.data);
-      Resources(UserID);
+      Resources(UserID, token);
     }).catch(error => {
-      console.error('Error message:', error);
+      console.error('Error:', error);
+                  Resources(UserID, token);
     })
   }).catch((error) => {
     console.error('Failed to get resource via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    Resources(UserID);
+    Resources(UserID, token);
 
   })
 }
@@ -2891,9 +3252,13 @@ const DeleteASpecificResource = (UserID) => {
 // Resource functions
 /* ***************** */
 
-const SelectResource = async (UserID) => {
+const SelectResource = async (UserID, token) => {
   try {
-    const response = await axios.get('http://localhost:3000/GreenThumb/api/v1/resources-list');
+    const response = await axios.get('http://localhost:3000/GreenThumb/api/v1/resources-list', {
+      headers: {
+          'Authorization': `Bearer ${token}`
+      }
+  });
     console.log(response.data);
 
     const answers = await inquirer.prompt({
@@ -2907,16 +3272,20 @@ const SelectResource = async (UserID) => {
 
     if (selectedResource) {
       console.log(selectedResource);
-      addPartnership(UserID, selectedResource.ResourceID);
+      addPartnership(UserID, selectedResource.ResourceID, token);
     } else {
       console.error('Selected Resource not found.');
+    SelectResource(UserID, token);
+
     }
   } catch (error) {
     console.error('Error fetching resources:', error);
+    console.error('Error:', error);
+    SelectResource(UserID, token);
   }
 }
 
-const addPartnership = (UserID, ResourceID) => {
+const addPartnership = (UserID, ResourceID, token) => {
 
   inquirer
     .prompt([
@@ -2960,7 +3329,11 @@ const addPartnership = (UserID, ResourceID) => {
     .then(answers => {
       console.log('Enter Partnership data');
       console.log(answers)
-      axios.get("http://localhost:3000/GreenThumb/api/v1/partnerships-list").then(response1 => {
+      axios.get("http://localhost:3000/GreenThumb/api/v1/partnerships-list", {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    }).then(response1 => {
         // Define the URL to which you want to send the POST request
         const url = 'http://localhost:3000/GreenThumb/api/v1/new-partnership';
         console.log(response1.data.length + 1);
@@ -2972,21 +3345,33 @@ const addPartnership = (UserID, ResourceID) => {
           ContactInfo: answers.contactinfo
         };
 
-        axios.post(url, postData)
+        axios.post(url, postData, {
+          headers: {
+              'Authorization': `Bearer ${token}`
+          }
+      })
           .then(response2 => {
             // Handle success
             console.log('Response2');
 
-            axios.get("http://localhost:3000/GreenThumb/api/v1/resource-partnership-list").then(response3 => { // arrive here ( also edit garden )
+            axios.get("http://localhost:3000/GreenThumb/api/v1/resource-partnership-list", {
+              headers: {
+                  'Authorization': `Bearer ${token}`
+              }
+          }).then(response3 => { // arrive here ( also edit garden )
               axios.post('http://localhost:3000/GreenThumb/api/v1/new-resource-partnership', {
                 Resource_Partnership_ID: response3.data.length + 1,
                 PartnershipID: response1.data.length + 1,
                 ResourceID: ResourceID
-              })
+              }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
                 .then(response4 => {
                   // Handle success
                   console.log('Response4');
-                  Partnership(UserID);
+                  Partnership(UserID, token);
                   // mainMenu(response.data.user.UserID);
 
 
@@ -2994,9 +3379,11 @@ const addPartnership = (UserID, ResourceID) => {
                 .catch(error => {
                   // Handle error
                   console.error('Error:', error);
+                  Partnership(UserID, token);
                 });
             }).catch(error => {
               console.error('Error:', error);
+                  Partnership(UserID, token);
             })
 
 
@@ -3004,6 +3391,7 @@ const addPartnership = (UserID, ResourceID) => {
 
           }).catch(error => {
             console.error('Error:', error);
+                  Partnership(UserID, token);
           })
 
 
@@ -3012,25 +3400,32 @@ const addPartnership = (UserID, ResourceID) => {
         .catch(error => {
           // Handle error
           console.error('Error:', error);
+                  Partnership(UserID, token);
         });
 
     })
     .catch((error) => {
-      console.error('Login failed:', error);
+      console.error('Error:', error);
+                  Partnership(UserID, token);
     });
-  // Garden(UserID);
+  // Garden(UserID, token);
 }
 
-const DisplayAllPartnerships = (UserID) => {
-  axios.get("http://localhost:3000/GreenThumb/api/v1/partnerships-list").then(response => {
+const DisplayAllPartnerships = (UserID, token) => {
+  axios.get("http://localhost:3000/GreenThumb/api/v1/partnerships-list", {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
     console.log(response.data);
-    Partnership(UserID);
+    Partnership(UserID, token);
   }).catch(error => {
-
+    console.error('Error:', error);
+                  Partnership(UserID, token);
   })
 }
 
-const DisplayPartnershipById = (UserID) => {
+const DisplayPartnershipById = (UserID, token) => {
   inquirer.prompt(
     [
       {
@@ -3047,22 +3442,27 @@ const DisplayPartnershipById = (UserID) => {
       },
     ]
   ).then(answers => {
-    axios.get(`http://localhost:3000/GreenThumb/api/v1/partnership/${answers.PartnershipID}`).then(response => {
+    axios.get(`http://localhost:3000/GreenThumb/api/v1/partnership/${answers.PartnershipID}`, {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
       console.log(response.data);
-      Partnership(UserID);
+      Partnership(UserID, token);
     }).catch(error => {
-      console.error('Error message:', error);
+      console.error('Error:', error);
+                  Partnership(UserID, token);
     })
   }).catch((error) => {
     console.error('Failed to get partnership via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    Partnership(UserID);
+    Partnership(UserID, token);
 
   })
 
 }
 
-const DisplayPartnershipsByName = (UserID) => {
+const DisplayPartnershipsByName = (UserID, token) => {
   inquirer.prompt(
     [
       {
@@ -3079,22 +3479,27 @@ const DisplayPartnershipsByName = (UserID) => {
       },
     ]
   ).then(answers => {
-    axios.get(`http://localhost:3000/GreenThumb/api/v1/partnerships-list-by-name/${answers.name}`).then(response => {
+    axios.get(`http://localhost:3000/GreenThumb/api/v1/partnerships-list-by-name/${answers.name}`, {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
       console.log(response.data);
-      Partnership(UserID);
+      Partnership(UserID, token);
     }).catch(error => {
-      console.error('Error message:', error);
+      console.error('Error:', error);
+                  Partnership(UserID, token);
     })
   }).catch((error) => {
     console.error('Failed to get partnership via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    Partnership(UserID);
+    Partnership(UserID, token);
 
   })
 }
 
 
-const UpdatePartnershipData = (UserID) => {
+const UpdatePartnershipData = (UserID, token) => {
   inquirer.prompt(
     [
       {
@@ -3155,7 +3560,11 @@ const UpdatePartnershipData = (UserID) => {
         Type: answers1.type,
         ContactInfo: answers1.contactinfo,
         Name: answers1.name
-      }).then(response => {
+      }, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    }).then(response => {
         console.log({
           PartnershipID: answers.PartnershipID,
           Type: answers1.type,
@@ -3163,24 +3572,26 @@ const UpdatePartnershipData = (UserID) => {
           Name: answers1.name
         });
 
-        Partnership(UserID);
+        Partnership(UserID, token);
       }).catch(error => {
-        console.error('Error message:', error);
+        console.error('Error:', error);
+                  Partnership(UserID, token);
       })
     }).catch(error => {
-
+      console.error('Error:', error);
+                  Partnership(UserID, token);
     })
 
 
   }).catch((error) => {
     console.error('Failed to get resource via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    Partnership(UserID);
+    Partnership(UserID, token);
 
   })
 }
 
-const DeleteASpecificPartnership = (UserID) => {
+const DeleteASpecificPartnership = (UserID, token) => {
   inquirer.prompt(
     [
       {
@@ -3197,16 +3608,21 @@ const DeleteASpecificPartnership = (UserID) => {
       },
     ]
   ).then(answers => {
-    axios.delete(`http://localhost:3000/GreenThumb/api/v1/partnership/${answers.PartnershipID}`).then(response => {
+    axios.delete(`http://localhost:3000/GreenThumb/api/v1/partnership/${answers.PartnershipID}`, {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
       console.log(response.data);
-      Partnership(UserID);
+      Partnership(UserID, token);
     }).catch(error => {
-      console.error('Error message:', error);
+      console.error('Error:', error);
+                  Partnership(UserID, token);
     })
   }).catch((error) => {
     console.error('Failed to get Partnership via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    Partnership(UserID);
+    Partnership(UserID, token);
 
   })
 }
@@ -3219,9 +3635,13 @@ const DeleteASpecificPartnership = (UserID) => {
 // Resource functions
 /* ***************** */
 
-const SelectActivity = async (UserID) => {
+const SelectActivity = async (UserID, PlotID, token) => {
   try {
-    const response = await axios.get('http://localhost:3000/GreenThumb/api/v1/activities-list');
+    const response = await axios.get('http://localhost:3000/GreenThumb/api/v1/activities-list', {
+      headers: {
+          'Authorization': `Bearer ${token}`
+      }
+  });
     console.log(response.data);
 
     const answers = await inquirer.prompt({
@@ -3235,16 +3655,17 @@ const SelectActivity = async (UserID) => {
 
     if (selectedActivity) {
       console.log(selectedActivity);
-      addPlant(UserID, selectedActivity.ActivityID);
+      addPlant(UserID, selectedActivity.ActivityID, token);
     } else {
       console.error('Selected Activity not found.');
     }
   } catch (error) {
     console.error('Error fetching activities:', error);
+    SelectActivity(UserID, PlotID, token);
   }
 }
 
-const addPlant = (UserID, ActivityID) => {
+const addPlant = (UserID, ActivityID, token) => {
 
   inquirer
     .prompt([
@@ -3288,7 +3709,11 @@ const addPlant = (UserID, ActivityID) => {
     .then(answers => {
       console.log('Enter Plant data');
       console.log(answers)
-      axios.get("http://localhost:3000/GreenThumb/api/v1/plants-list").then(response1 => {
+      axios.get("http://localhost:3000/GreenThumb/api/v1/plants-list", {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    }).then(response1 => {
         // Define the URL to which you want to send the POST request
         const url = 'http://localhost:3000/GreenThumb/api/v1/new-plant';
         console.log(response1.data.length + 1);
@@ -3300,21 +3725,33 @@ const addPlant = (UserID, ActivityID) => {
           Description: answers.Description
         };
 
-        axios.post(url, postData)
+        axios.post(url, postData, {
+          headers: {
+              'Authorization': `Bearer ${token}`
+          }
+      })
           .then(response2 => {
             // Handle success
             console.log('Response2');
 
-            axios.get("http://localhost:3000/GreenThumb/api/v1/plantingactivity-plant-list").then(response3 => { // arrive here ( also edit garden )
+            axios.get("http://localhost:3000/GreenThumb/api/v1/plantingactivity-plant-list", {
+              headers: {
+                  'Authorization': `Bearer ${token}`
+              }
+          }).then(response3 => { // arrive here ( also edit garden )
               axios.post('http://localhost:3000/GreenThumb/api/v1/new-plantingactivity-plant', {
                 PlantingActivity_Plant_ID: response3.data.length + 1,
                 PlantID: response1.data.length + 1,
                 ActivityID: ActivityID
-              })
+              }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
                 .then(response4 => {
                   // Handle success
                   console.log('Response4');
-                  EnterToPlantWindow(UserID);
+                  EnterToPlantWindow (UserID, PlotID, token);
                   // mainMenu(response.data.user.UserID);
 
 
@@ -3322,9 +3759,11 @@ const addPlant = (UserID, ActivityID) => {
                 .catch(error => {
                   // Handle error
                   console.error('Error:', error);
+                  EnterToPlantWindow (UserID, PlotID, token);
                 });
             }).catch(error => {
               console.error('Error:', error);
+              EnterToPlantWindow (UserID, PlotID, token);
             })
 
 
@@ -3332,6 +3771,7 @@ const addPlant = (UserID, ActivityID) => {
 
           }).catch(error => {
             console.error('Error:', error);
+            EnterToPlantWindow (UserID, PlotID, token);
           })
 
 
@@ -3340,25 +3780,36 @@ const addPlant = (UserID, ActivityID) => {
         .catch(error => {
           // Handle error
           console.error('Error:', error);
+          EnterToPlantWindow (UserID, PlotID, token);
         });
 
     })
     .catch((error) => {
       console.error('Login failed:', error);
+      EnterToPlantWindow (UserID, PlotID, token);
     });
-  // Garden(UserID);
+  // Garden(UserID, token);
 }
 
-const DisplayAllPlants = (UserID) => {
-  axios.get("http://localhost:3000/GreenThumb/api/v1/plants-list").then(response => {
+const DisplayAllPlants = (UserID, PlotID, token) => {
+  console.log("************");
+  console.log(token);
+  axios.get("http://localhost:3000/GreenThumb/api/v1/plants-list", {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
     console.log(response.data);
-    EnterToPlantWindow(UserID);
+    EnterToPlantWindow (UserID, PlotID, token);
   }).catch(error => {
-
+    console.error('Error:', error);
+    EnterToPlantWindow (UserID, PlotID, token);
   })
 }
 
-const DisplayPlantById = (UserID) => {
+
+
+const DisplayPlantById = (UserID, PlotID, token) => {
   inquirer.prompt(
     [
       {
@@ -3375,22 +3826,27 @@ const DisplayPlantById = (UserID) => {
       },
     ]
   ).then(answers => {
-    axios.get(`http://localhost:3000/GreenThumb/api/v1/plant/${answers.PlantID}`).then(response => {
+    axios.get(`http://localhost:3000/GreenThumb/api/v1/plant/${answers.PlantID}`, {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
       console.log(response.data);
-      EnterToPlantWindow(UserID);
+      EnterToPlantWindow (UserID, PlotID, token);
     }).catch(error => {
-      console.error('Error message:', error);
+      console.error('Error:', error);
+      EnterToPlantWindow (UserID, PlotID, token);
     })
   }).catch((error) => {
     console.error('Failed to get plant via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    EnterToPlantWindow(UserID);
+    EnterToPlantWindow (UserID, PlotID, token);
 
   })
 
 }
 
-const DisplayPlantsByName = (UserID) => {
+const DisplayPlantsByName = (UserID, PlotID, token) => {
   inquirer.prompt(
     [
       {
@@ -3407,22 +3863,27 @@ const DisplayPlantsByName = (UserID) => {
       },
     ]
   ).then(answers => {
-    axios.get(`http://localhost:3000/GreenThumb/api/v1/plants-list-by-name/${answers.name}`).then(response => {
+    axios.get(`http://localhost:3000/GreenThumb/api/v1/plants-list-by-name/${answers.name}`, {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
       console.log(response.data);
-      EnterToPlantWindow(UserID);
+      EnterToPlantWindow (UserID, PlotID, token);
     }).catch(error => {
-      console.error('Error message:', error);
+      console.error('Error:', error);
+      EnterToPlantWindow (UserID, PlotID, token);
     })
   }).catch((error) => {
     console.error('Failed to get plant via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    EnterToPlantWindow(UserID);
+    EnterToPlantWindow (UserID, PlotID, token);
 
   })
 }
 
 
-const UpdatePlantData = (UserID) => {
+const UpdatePlantData = (UserID, PlotID, token) => {
   inquirer.prompt(
     [
       {
@@ -3483,7 +3944,11 @@ const UpdatePlantData = (UserID) => {
         Name: answers1.name,
         Description: answers1.description,
         GrowingSeason: answers1.growingseason
-      }).then(response => {
+      }, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    }).then(response => {
         console.log({
           PlantID: answers.PlantID,
           Name: answers1.name,
@@ -3491,24 +3956,26 @@ const UpdatePlantData = (UserID) => {
           GrowingSeason: answers1.growingseason
         });
 
-        EnterToPlantWindow(UserID);
+        EnterToPlantWindow (UserID, PlotID, token);
       }).catch(error => {
-        console.error('Error message:', error);
+        console.error('Error:', error);
+        EnterToPlantWindow (UserID, PlotID, token);
       })
     }).catch(error => {
-
+      console.error('Error:', error);
+      EnterToPlantWindow (UserID, PlotID, token);
     })
 
 
   }).catch((error) => {
     console.error('Failed to get plant via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    EnterToPlantWindow(UserID);
+    EnterToPlantWindow (UserID, PlotID, token);
 
   })
 }
 
-const DeleteASpecificPlant = (UserID) => {
+const DeleteASpecificPlant = (UserID, PlotID, token) => {
   inquirer.prompt(
     [
       {
@@ -3525,16 +3992,21 @@ const DeleteASpecificPlant = (UserID) => {
       },
     ]
   ).then(answers => {
-    axios.delete(`http://localhost:3000/GreenThumb/api/v1/plant/${answers.PlantID}`).then(response => {
+    axios.delete(`http://localhost:3000/GreenThumb/api/v1/plant/${answers.PlantID}`, {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+}).then(response => {
       console.log(response.data);
-      EnterToPlantWindow(UserID);
+      EnterToPlantWindow (UserID, PlotID, token);
     }).catch(error => {
-      console.error('Error message:', error);
+      console.error('Error:', error);
+      EnterToPlantWindow (UserID, PlotID, token);
     })
   }).catch((error) => {
     console.error('Failed to get Plant via id:', error);
     // Optionally, you can return to the main menu even in case of an error
-    EnterToPlantWindow(UserID);
+    EnterToPlantWindow (UserID, PlotID, token);
 
   })
 }

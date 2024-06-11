@@ -130,7 +130,7 @@ const getUserData = (req, res) => {
 };
 
 const getAdminData = (req, res) => {
-  res.json({ message: `Hello ${req.user.name}, this is admin data` });
+  res.json({ message: `Hello ${req.user.Username}, this is admin data` });
 };
 
 
