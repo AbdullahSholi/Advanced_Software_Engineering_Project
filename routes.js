@@ -22,9 +22,9 @@ const resourceController = require('./controllers/Resource/resource');
 const exchangeController = require('./controllers/Exchange/exchange');
 const activityController = require('./controllers/Activity/activity');
 //------------
-const authMiddleware = require('../Advanced_Software_Engineering_Project/middlewares/authMiddleware');
-const roleMiddleware = require('../Advanced_Software_Engineering_Project/middlewares/roleMiddleware');
-const { getPublicData, getUserData, getAdminData } = require('../Advanced_Software_Engineering_Project/controllers/User/user');
+const authMiddleware = require('./middlewares/authMiddleware');
+const roleMiddleware = require('./middlewares/roleMiddleware');
+const { getPublicData, getUserData, getAdminData } = require('./controllers/User/user');
 //------------
 
 // Create a new task

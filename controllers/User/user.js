@@ -1,5 +1,5 @@
 const User = require('../../models/User/user_db_queries');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const users1 = [
   { UserId: 1, Username: 'User', Email: 'user@example.com', Password: bcrypt.hashSync('password', 10), Role: 'user' },

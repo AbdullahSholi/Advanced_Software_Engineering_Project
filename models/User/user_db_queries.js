@@ -1,7 +1,7 @@
 const db = require('../../db-connection');
 
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const { promisify } = require('util');
 
 // Promisify the db.query method for async/await use
