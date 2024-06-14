@@ -121,8 +121,10 @@ const registerPage = () => {
         axios.post(url, postData, )
           .then(response => {
             // Handle success
+            console.log("-----------");
             console.log('Response:', response.data);
-            mainMenu(response.data.length + 1, response.data.token);
+            console.log("-----------");
+            mainMenu(response.data.user.UserID, response.data.token);
           })
           .catch(error => {
             // Handle error
