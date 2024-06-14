@@ -30,9 +30,9 @@ const { getPublicData, getUserData, getAdminData } = require('./controllers/User
 // Create a new task
 router.post('/GreenThumb/api/v1/new-garden', authMiddleware, roleMiddleware(['admin']), gardenController.addGarden);
 router.post('/GreenThumb/api/v1/new-user-garden', authMiddleware, roleMiddleware(['admin']), gardenController.addUserGarden);
-router.get('/GreenThumb/api/v1/user-garden-list/:id', authMiddleware, roleMiddleware(['admin']), gardenController.getUserGardenList);
+router.get('/GreenThumb/api/v1/user-garden-list/:id', authMiddleware, roleMiddleware(['user' ,'admin']), gardenController.getUserGardenList);
 router.get('/GreenThumb/api/v1/user-gardens-list', authMiddleware, roleMiddleware(['admin']), gardenController.getUserGardensList);
-router.get("/GreenThumb/api/v1/gardens-list", authMiddleware, roleMiddleware(['admin']), gardenController.getGardenList);
+router.get("/GreenThumb/api/v1/gardens-list", authMiddleware, roleMiddleware(['user' ,'admin']), gardenController.getGardenList);
 router.get("/GreenThumb/api/v1/garden-list/:id", authMiddleware, roleMiddleware(['user','admin']), gardenController.getGardenListById);
 router.get("/GreenThumb/api/v1/garden-list-by-name/:name", authMiddleware, roleMiddleware(['user','admin']), gardenController.getGardenListByName);
 router.get("/GreenThumb/api/v1/garden-list-by-location/:location", authMiddleware, roleMiddleware(['user','admin']), gardenController.getGardenListByLocation);

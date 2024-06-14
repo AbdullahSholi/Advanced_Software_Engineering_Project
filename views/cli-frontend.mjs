@@ -372,7 +372,7 @@ const Event = (UserID, token) => {
     }
 }).then(response => {
     console.log(response.data);
-    console.log(response.data[0].GardenID);
+    console.log(response.data);
     const GardenID = response.data[0].GardenID;
     if(GardenID == undefined){
       console.log("Garden not found!");
